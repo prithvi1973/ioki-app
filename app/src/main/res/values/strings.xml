@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">IOki</string>
+    <string name="password">Password</string>
+    <string name="name">Username</string>
+</resources>

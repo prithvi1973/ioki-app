@@ -16,7 +16,6 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText mName;
     private EditText mPassword;
-    private static boolean check_result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,55 +23,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mName = (EditText) findViewById(R.id.name);
         mPassword = (EditText) findViewById(R.id.password);
+
+        /*Intent afterRegisteration = getIntent();
+
+        if(afterRegisteration.hasExtra("name") && afterRegisteration.hasExtra("password")){
+            String name= afterRegisteration.getStringExtra("name");
+            String password = afterRegisteration.getStringExtra("password");
+            mName.setText(name);
+            mPassword.setText(password);
+        }*/
     }
-
-    boolean checker(String name, String password){
-        Log.d("ioki", mName.getText().toString());
-        Log.d("ioki", mPassword.getText().toString());
-
-        if(name == "" || name.length()<5){
-            Toast.makeText(this, "Invalid Username",Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        else if( password.length() < 5){
-            Toast.makeText(this, "Invalid Password",Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        else{
-            Toast.makeText(this, "Login Successful. Please wait.",Toast.LENGTH_SHORT).show();
-            return true;
-        }
-    }
-
 
     public void LoginIntoAccount(View view) {
 
          String name = mName.getText().toString();
          String password = mPassword.getText().toString();
-         check_result = checker(name, password);
 
-             if(check_result){
+         URL LoginUrl = NetworkUtils.buildUrl(name, password);
+         Log.d("ioki", LoginUrl.toString());
+         new IOkiLoginTask().execute(LoginUrl);
 
-                URL LoginUrl = NetworkUtils.buildUrl(name, password);
-                Log.d("ioki", LoginUrl.toString());
-                new IOkiLoginTask().execute(LoginUrl);
-             }
-
-             else{
-                Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show();
-             }
     }
 
     public void registerNewUser(View view) {
-        Intent myIntent = new Intent(this, form_fields.class);
+        Intent myIntent = new Intent(MainActivity.this, RegisterUserName.class);
         startActivity(myIntent);
         finish();
     }
 
     public class IOkiLoginTask extends AsyncTask<URL, Void, String> {
-
 
         @Override
         protected String doInBackground(URL... params) {
@@ -90,9 +69,12 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String queryResults) {
             if (queryResults != null && !queryResults.equals("")) {
                 Log.d("ioki", queryResults);
+            }else{
+                Log.d("ioki","No results fetched from login");
             }
         }
     }
-
-
 }
+
+
+//cover flow for various credentials

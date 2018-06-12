@@ -2,4 +2,16 @@
     <string name="app_name">IOki</string>
     <string name="password">Password</string>
     <string name="name">Username</string>
+    <string name="register">Not registered? Create new account</string>
+    <string name="next_button">Next</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="contact_number">Contact Number</string>
+    <string name="email">Email ID</string>
+    <string name="pin">Enter security PIN</string>
+    <string name="RegistrationDone">Done</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="next_button1">Next</string>
+    <string name="next">Next</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="enter_4_digit_pin">Enter 4 digit PIN</string>
 </resources>

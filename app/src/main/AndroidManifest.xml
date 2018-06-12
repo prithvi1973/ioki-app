@@ -14,10 +14,14 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ResigterPassword" />
+        <activity android:name=".RegisterUserName" />
+        <activity android:name=".RegisterEmail"/>
+        <activity android:name=".RegisterPIN"/>
+
     </application>
 
 </manifest>

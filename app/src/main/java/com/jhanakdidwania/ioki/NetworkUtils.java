@@ -32,11 +32,11 @@ public class NetworkUtils {
     static String PIN;
     static String email;
 
-    public static void setUsername(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public static void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

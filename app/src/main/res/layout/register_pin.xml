@@ -13,6 +13,8 @@
         android:layout_marginTop="142dp"
         android:ems="10"
         android:hint="@string/enter_4_digit_pin"
+        android:maxLength="4"
+        android:textAlignment="center"
         android:inputType="numberPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

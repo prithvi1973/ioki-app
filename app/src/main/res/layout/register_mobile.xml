@@ -14,6 +14,9 @@
         android:layout_marginStart="67dp"
         android:layout_marginTop="163dp"
         android:hint="Mobile Number"
+        android:textAlignment="center"
+        android:maxLength="13"
+        android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

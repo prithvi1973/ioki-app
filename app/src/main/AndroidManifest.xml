@@ -17,10 +17,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ResigterPassword" />
         <activity android:name=".RegisterUserName" />
-        <activity android:name=".RegisterEmail"/>
-        <activity android:name=".RegisterPIN"/>
+        <activity android:name=".RegisterPassword" />
+        <activity android:name=".RegisterPIN" />
+        <activity android:name=".RegisterEmail" />
+        <activity android:name=".RegisterMobile"/>
 
     </application>
 

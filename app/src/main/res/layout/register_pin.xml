@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:layout_editor_absoluteY="25dp">
 
     <EditText
         android:id="@+id/PIN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="142dp"
         android:ems="10"
         android:hint="@string/enter_4_digit_pin"
         android:inputType="numberPassword"
-        tools:layout_editor_absoluteX="84dp"
-        tools:layout_editor_absoluteY="142dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/Next3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="51dp"
+        android:onClick="moveToNextStepOfRegistration"
         android:text="Next"
-        android:onClick="MoveToNextStepOfRegistration"
-        tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="239dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PIN"
         tools:ignore="MissingConstraints" />
 
 </android.support.constraint.ConstraintLayout>

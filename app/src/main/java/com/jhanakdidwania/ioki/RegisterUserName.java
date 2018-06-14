@@ -1,11 +1,12 @@
 package com.jhanakdidwania.ioki;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -13,17 +14,20 @@ public class RegisterUserName extends AppCompatActivity {
 
     private EditText mUsername;
     private EditText mName;
-    private Button mNext;
-    private String USERNAME_EXTRA;
-    private String NAME_EXTRA;
+    // private String USERNAME_EXTRA;
+    // private String NAME_EXTRA;
+
+    // Used to store instance of this activity to finish to later
+    @SuppressLint("StaticFieldLeak")
+    public static Activity activityInstance;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_username);
-        mUsername = (EditText) findViewById(R.id.Username);
-        mName = (EditText) findViewById(R.id.Name);
-        mNext = findViewById(R.id.Next1);
+        mUsername = findViewById(R.id.Username);
+        mName = findViewById(R.id.Name);
+        activityInstance = this;
     }
 
     public void MoveToNextStepOfRegistration(View view) {
@@ -33,23 +37,19 @@ public class RegisterUserName extends AppCompatActivity {
             Toast.makeText(this, "Fill all the fields", Toast.LENGTH_SHORT).show();
         else {
             //save the name and username into the database
-            NetworkUtils.setName(name);
-            NetworkUtils.setUsername(username);
-            Intent mIntent = new Intent(this, ResigterPassword.class);
+            User.setName(name);
+            User.setUsername(username);
+            Intent mIntent = new Intent(this, RegisterPassword.class);
             startActivity(mIntent);
-            finish();
         }
     }
 
-
     public String getUsername() {
-        String username = mUsername.getText().toString();
-        return username;
+        return mUsername.getText().toString();
     }
 
     public String getName() {
-        String name = mName.getText().toString();
-        return name;
+        return mName.getText().toString();
     }
 
    /* @Override

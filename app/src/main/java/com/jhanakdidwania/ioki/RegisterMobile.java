@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class RegisterMobile extends AppCompatActivity{
 
@@ -17,15 +18,31 @@ public class RegisterMobile extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_mobile);
 
-        mMobile = (EditText)findViewById(R.id.mobile);
-        mDone = (Button)findViewById(R.id.done_button);
+        mMobile = findViewById(R.id.mobile);
+        mDone = findViewById(R.id.done_button);
     }
 
-    public void RegistrationDone(View view){
-        String mobileNumber = mMobile.getText().toString();
-        NetworkUtils.setMobile(mobileNumber);
+    // Helper function to check mobile validity
+    private boolean isValidMobile(String phone) {
+        return android.util.Patterns.PHONE.matcher(phone).matches();
+    }
 
-        //What to do next, basically we need to send all the sign up details to the server
-        //can call the login page at this time with the extra text of name and password to login
+    public void completeRegistration(View view){
+        if(isValidMobile(mMobile.getText().toString())) {
+            User.setMobile(mMobile.getText().toString());
+
+            // Save user details locally and register
+            User.writeLocalDB();
+            User.register();
+            boolean registered = User.getStatus();
+
+            if(registered) {
+                Toast.makeText(this, "Registered Successfully", Toast.LENGTH_SHORT).show();
+                RegisterUserName.activityInstance.finish();
+                RegisterEmail.activityInstance.finish();
+                finish();
+            }
+
+        } else Toast.makeText(this, "Invalid Mobile Number", Toast.LENGTH_SHORT).show();
     }
 }

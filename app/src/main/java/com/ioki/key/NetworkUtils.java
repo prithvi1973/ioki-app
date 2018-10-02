@@ -1,4 +1,6 @@
-package com.jhanakdidwania.ioki;
+package com.ioki.key;
+
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -23,7 +25,7 @@ public class NetworkUtils {
      *  When required, users/login/ or users/register/ can be appended to it
      *  to generate usage specific URLs
      */
-    final static String IoKi_BASE_URL = "http://pasf.netau.net/ioki/";
+    final static String IoKi_BASE_URL = "http://www.amone.apps19.com/ioki/";
 
     /** Helper function for performPostDataString
      *  Reads a hash map of parameters
@@ -56,6 +58,8 @@ public class NetworkUtils {
     public static String  performPostCall(String requestURL, HashMap<String, String> postDataParams) {
 
         URL url;
+        requestURL += "?appRequest";
+        Log.d("ioki",requestURL);
         StringBuilder response = new StringBuilder();
         try {
             url = new URL(requestURL);

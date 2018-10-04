@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/navBar_locks"
+        android:orderInCategory="1"
+        android:title="@string/lock"
+        android:icon="@mipmap/baseline_lock_black_24"/>
+    <item android:id="@+id/navBar_credentials"
+        android:orderInCategory="2"
+        android:title="@string/credentials"
+        android:icon="@mipmap/baseline_payment_black_24"/>
+    <item android:id="@+id/navBar_settings"
+        android:orderInCategory="3"
+        android:title="@string/settings"
+        android:icon="@mipmap/baseline_settings_black_24"/>
+</menu>

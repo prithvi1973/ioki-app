@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.ioki.key.Dashboard" />
+        <activity android:name="com.ioki.key.MainActivity" />
         <activity android:name="com.ioki.key.RegisterUserName" />
         <activity android:name="com.ioki.key.RegisterPassword" />
         <activity android:name="com.ioki.key.RegisterPIN" />

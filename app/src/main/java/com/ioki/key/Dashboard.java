@@ -55,8 +55,8 @@ public class Dashboard extends AppCompatActivity{
     public void loadFrequentlyUsed(MenuItem item) {
         listItems.clear();
 
-        // TODO: Fetch Frequent Used JSON
-        for(int i=0; i<10; i++) {
+        // TODO: Fetch Frequently Used JSON
+        for(int i=0; i<3; i++) {
             ListItem listItem = new ListItem("Frequent Used " + (i+1),"Description " + (i+1));
             listItems.add(listItem);
         }
@@ -70,7 +70,7 @@ public class Dashboard extends AppCompatActivity{
         listItems.clear();
 
         // TODO: Fetch Locks JSON
-        for(int i=0; i<10; i++) {
+        for(int i=0; i<4; i++) {
             ListItem listItem = new ListItem("Lock " + (i+1),"Description " + (i+1));
             listItems.add(listItem);
         }

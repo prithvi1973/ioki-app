@@ -21,5 +21,6 @@
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
     <string name="logout">Logout</string>
-    <string name="nav_header_text">Some Heading</string>
+    <string name="nav_header_text">Prithvi Anand</string>
+    <string name="enter_otp_here">Enter OTP</string>
 </resources>

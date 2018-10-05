@@ -1,8 +1,11 @@
 package com.ioki.key;
 
+import android.widget.ImageButton;
+
 public class ListItem {
     String heading;
     String description;
+    ImageButton actionButton;
 
     public ListItem(String heading, String description) {
         this.heading = heading;
@@ -15,5 +18,9 @@ public class ListItem {
 
     public String getDescription() {
         return description;
+    }
+
+    public ImageButton getActionButton() {
+        return actionButton;
     }
 }

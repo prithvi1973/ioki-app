@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
@@ -29,10 +30,9 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ListItemAdapter.ViewHolder holder, int position) {
-        ListItem listItem = listItems.get(position);
+        final ListItem listItem = listItems.get(position);
         holder.heading.setText(listItem.getHeading());
         holder.description.setText(listItem.getDescription());
-
     }
 
     @Override
@@ -44,11 +44,13 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
 
         public TextView heading;
         public TextView description;
+        public ImageButton actionButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
             heading = itemView.findViewById(R.id.listItemHeading);
             description = itemView.findViewById(R.id.listItemDescription);
+            actionButton = itemView.findViewById(R.id.listItemActionButton);
         }
     }
 }

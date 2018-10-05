@@ -4,6 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!--<uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>-->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,11 +21,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.ioki.key.Dashboard" />
         <activity android:name="com.ioki.key.RegisterUserName" />
         <activity android:name="com.ioki.key.RegisterPassword" />
         <activity android:name="com.ioki.key.RegisterPIN" />
         <activity android:name="com.ioki.key.RegisterEmail" />
         <activity android:name="com.ioki.key.RegisterMobile"/>
+        <activity android:name="com.ioki.key.OtpActivity"/>
+
+        <receiver
+            android:name=".MySMSBroadCastReceiver"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter android:priority="999">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

@@ -12,16 +12,14 @@
         android:orientation="vertical">
 
         <include layout="@layout/nav_action" android:layout_width="match_parent" android:layout_height="wrap_content" />
-        
-        <android.support.v7.widget.AppCompatTextView
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Dashboard"
-            android:id="@+id/dashboard"
-            android:layout_gravity="center_vertical"
-            android:textAlignment="center"
-            android:paddingTop="10dp"
-            android:textSize="24dp"/>
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+
 
     </android.support.v7.widget.LinearLayoutCompat>
 

@@ -1,6 +1,5 @@
 package com.ioki.key;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,11 +13,9 @@ import java.util.List;
 public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHolder> {
 
     private List<ListItem> listItems;
-    private Context context;
 
-    public ListItemAdapter(List<ListItem> listItems, Context context) {
+    ListItemAdapter(List<ListItem> listItems) {
         this.listItems = listItems;
-        this.context = context;
     }
 
     @NonNull
@@ -40,13 +37,13 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
         return listItems.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView heading;
-        public TextView description;
-        public ImageButton actionButton;
+        TextView heading;
+        TextView description;
+        ImageButton actionButton;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             heading = itemView.findViewById(R.id.listItemHeading);
             description = itemView.findViewById(R.id.listItemDescription);

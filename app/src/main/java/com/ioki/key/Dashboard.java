@@ -1,7 +1,6 @@
 package com.ioki.key;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -62,21 +61,21 @@ public class Dashboard extends AppCompatActivity{
     @SuppressLint("RtlHardcoded")
     public void loadFrequentlyUsed(MenuItem item) {
         fab.setVisibility(View.GONE);
-        new populateRecyclerViewTask(this, "frequent", listItems, recyclerView).execute("1","2");
+        new populateRecyclerViewTask("frequent", listItems, recyclerView).execute("1","2");
         drawerLayout.closeDrawer(LEFT);
     }
 
     @SuppressLint("RtlHardcoded")
     public void loadLocks(MenuItem item) {
         fab.setVisibility(View.VISIBLE);
-        new populateRecyclerViewTask(this, "locks", listItems, recyclerView).execute("1","2");
+        new populateRecyclerViewTask("locks", listItems, recyclerView).execute("1","2");
         drawerLayout.closeDrawer(LEFT);
     }
 
     @SuppressLint("RtlHardcoded")
     public void loadCredentials(MenuItem item) {
         fab.setVisibility(View.VISIBLE);
-        new populateRecyclerViewTask(this, "credentials", listItems, recyclerView).execute("1","2");
+        new populateRecyclerViewTask("credentials", listItems, recyclerView).execute("1","2");
         drawerLayout.closeDrawer(LEFT);
     }
 
@@ -99,12 +98,10 @@ public class Dashboard extends AppCompatActivity{
         // Stores response from server
         private String requestType;
         private String response = "";
-        private Context context;
         private RecyclerView recyclerView;
         private List<ListItem> listItems;
 
-        private populateRecyclerViewTask(Context context, String requestType, List<ListItem> listItems, RecyclerView recyclerView) {
-            this.context = context;
+        private populateRecyclerViewTask(String requestType, List<ListItem> listItems, RecyclerView recyclerView) {
             this.requestType = requestType;
             this.listItems = listItems;
             this.recyclerView = recyclerView;
@@ -145,7 +142,7 @@ public class Dashboard extends AppCompatActivity{
                 } catch (JSONException e) {populateDummyListItems();}
             }
             else populateDummyListItems();
-            recyclerView.setAdapter(new ListItemAdapter(listItems, context));
+            recyclerView.setAdapter(new ListItemAdapter(listItems));
         }
     }
  }

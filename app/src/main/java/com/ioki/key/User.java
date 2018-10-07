@@ -41,6 +41,14 @@ public class User {
     public static void setPIN(String PIN) {User.PIN = PIN;}
     public static void setEmail(String email) {User.email = email;}
 
+    public static String getUsername() {
+        return username;
+    }
+
+    public static String getPassword() {
+        return password;
+    }
+
     public static void writeLocalDB() {
         // Logging messages temporarily
         // Code for writing to local DB will come here...

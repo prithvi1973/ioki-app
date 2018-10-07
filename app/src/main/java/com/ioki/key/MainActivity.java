@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     static SharedPreferences mSharedPreferences;
     static final String USERNAME = "usernameKey";
     static final String PASSWORD = "passwordKey";
-    private static final String RESPONSE = "responseKey";
+    static final String RESPONSE = "responseKey";
     public static final String PREFERENCES = "preferenceKey";
 
     @Override
@@ -39,9 +39,8 @@ public class MainActivity extends AppCompatActivity {
         mPassword = findViewById(R.id.password);
         mSharedPreferences= getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 
-        if(!(mSharedPreferences.getString(USERNAME,null).equals(null) ||
-                mSharedPreferences.getString(PASSWORD,null).equals(null) ||
-                mSharedPreferences.getString(RESPONSE,null).equals(null))){
+        if(mSharedPreferences.contains(USERNAME) && mSharedPreferences.contains(PASSWORD) &&
+                mSharedPreferences.contains(RESPONSE)){
             Intent intent = new Intent(this, Dashboard.class);
             startActivity(intent);
         }
@@ -121,7 +120,9 @@ public class MainActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = mSharedPreferences.edit();
                         Gson gson = new Gson();
                         String JSON = gson.toJson(resObj);
-                        editor.putString("RESPONSE", JSON);
+                        editor.putString(RESPONSE, JSON);
+                        editor.putString(USERNAME, User.getUsername());
+                        editor.putString(PASSWORD, User.getPassword());
                         editor.apply();
                     }
 

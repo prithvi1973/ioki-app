@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.telephony.SmsManager;
 
 public class MySMSBroadCastReceiver extends BroadcastReceiver {
 

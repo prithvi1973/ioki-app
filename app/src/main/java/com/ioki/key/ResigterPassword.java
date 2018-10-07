@@ -19,18 +19,14 @@ public class ResigterPassword extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_password);
-        mPassword= (EditText)findViewById(R.id.password);
-        mConfirmP= (EditText)findViewById(R.id.ConfirmPassword);
-        mNext= (Button) findViewById(R.id.Next2);
-
-        if(savedInstanceState!= null){
-
-        }
+        mPassword= findViewById(R.id.password);
+        mConfirmP= findViewById(R.id.ConfirmPassword);
+        mNext= findViewById(R.id.Next2);
     }
 
     boolean validate(String password) {
-        int countCapital, countSmall, countdigit;
-        countCapital= countdigit= countSmall= 0;
+        int countCapital, countSmall, countDigit;
+        countCapital= countDigit= countSmall= 0;
 
         if(password.length()>=8){
             int i=0;
@@ -41,8 +37,8 @@ public class ResigterPassword extends AppCompatActivity {
                 i++;
             }
             for(int j=0; j<=9; j++){
-                if(hash[j]>0) countdigit++;
-                if(countdigit>= 2) break;
+                if(hash[j]>0) countDigit++;
+                if(countDigit>= 2) break;
             }
             for(int j=97; j<=122; j++){
                 if(hash[j]>0) countSmall++;
@@ -53,10 +49,7 @@ public class ResigterPassword extends AppCompatActivity {
                 if(countCapital>= 2) break;
             }
 
-            if(countdigit<2 || countCapital<2 || countSmall<2){
-                return false;
-            }
-            return true;
+            return countDigit >= 2 && countCapital >= 2 && countSmall >= 2;
         }
         return false;
     }

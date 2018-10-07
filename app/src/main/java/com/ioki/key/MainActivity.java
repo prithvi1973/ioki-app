@@ -1,5 +1,6 @@
 package com.ioki.key;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -14,8 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,9 +40,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void LoginIntoAccount(View view) {
-         String name = mName.getText().toString();
+
+        Intent myIntent = new Intent(MainActivity.this, Dashboard.class);
+        startActivity(myIntent);
+        finish();
+
+         /*String name = mName.getText().toString();
          String password = mPassword.getText().toString();
-         new IOkiLoginTask(view.getContext()).execute(name,password);
+         new IOkiLoginTask(view.getContext()).execute(name, password);*/
     }
 
     public void registerNewUser(View view) {
@@ -56,9 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Stores response from server
         String response = "";
+        @SuppressLint("StaticFieldLeak")
         private Context context;
 
-        public IOkiLoginTask(Context context) {
+        IOkiLoginTask(Context context) {
             this.context = context;
         }
 
@@ -87,11 +92,14 @@ public class MainActivity extends AppCompatActivity {
                     for(int i=0; i<messages.length(); i++) {
                         Toast.makeText(this.context, messages.getJSONObject(i).getString("message"), Toast.LENGTH_LONG).show();
                     }
+                    Log.d("ioki", "JSON Response: "+response);
                 } catch (JSONException e) {
+                    Toast.makeText(this.context, "Couldn't communicate with server", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
+                    Log.d("ioki", "Invalid Response: "+response);
                 }
-                Log.d("ioki", "Response: "+response);
             }else{
+                Toast.makeText(this.context, "Couldn't communicate with server", Toast.LENGTH_LONG).show();
                 Log.d("ioki","No results fetched from user/");
             }
         }

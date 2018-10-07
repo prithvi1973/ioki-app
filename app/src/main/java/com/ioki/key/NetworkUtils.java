@@ -1,7 +1,5 @@
 package com.ioki.key;
 
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -45,6 +43,12 @@ public class NetworkUtils {
             result.append("=");
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
+        /* *
+         * TODO: Fetch SESSION variables into POST Request parameters for updation
+         * To maintain session variables as in browser, we need to update them
+         * every time, a request is sent by the user. They have to stored either
+         * in the AppData/RAM (not yet finalized where to store)
+         * */
 
         return result.toString();
     }
@@ -58,8 +62,8 @@ public class NetworkUtils {
     public static String  performPostCall(String requestURL, HashMap<String, String> postDataParams) {
 
         URL url;
-        requestURL += "?appRequest";
-        Log.d("ioki",requestURL);
+        // TODO: Add app request identifier in request URL
+        requestURL += "app/";
         StringBuilder response = new StringBuilder();
         try {
             url = new URL(requestURL);

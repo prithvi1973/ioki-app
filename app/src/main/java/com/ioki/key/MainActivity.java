@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +25,11 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText mName;
     private EditText mPassword;
+    static SharedPreferences mSharedPreferences;
+    static final String USERNAME = "usernameKey";
+    static final String PASSWORD = "passwordKey";
+    private static final String RESPONSE = "responseKey";
+    public static final String PREFERENCES = "preferenceKey";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mName = findViewById(R.id.name);
         mPassword = findViewById(R.id.password);
+        mSharedPreferences= getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 
         /*Intent afterRegistration = getIntent();
-
         if(afterRegistration.hasExtra("name") && afterRegistration.hasExtra("password")){
             String name= afterRegistration.getStringExtra("name");
             String password = afterRegistration.getStringExtra("password");
@@ -103,7 +111,11 @@ public class MainActivity extends AppCompatActivity {
 
                     Response resObj = new Response(json);
                     if(resObj.isValid()) {
-                        // TODO: Write response to shared preferences
+                        SharedPreferences.Editor editor = mSharedPreferences.edit();
+                        Gson gson = new Gson();
+                        String JSON = gson.toJson(resObj);
+                        editor.putString("MyObject", JSON);
+                        editor.apply();
                     }
 
                     Log.d("ioki", "JSON Response Type: "+type);

@@ -101,6 +101,11 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(this.context,"Invalid Credentials",Toast.LENGTH_SHORT).show();
                     }
 
+                    Response r = new Response(json);
+                    if(r.isValid()) {
+                        // TODO: Write response to shared preferences
+                    }
+
                     Log.d("ioki", "JSON Response Type: "+type);
                     Log.d("ioki", "JSON Response: "+response);
                 } catch (JSONException e) {

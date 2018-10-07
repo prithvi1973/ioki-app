@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,12 +25,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import static android.view.Gravity.LEFT;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class Dashboard extends AppCompatActivity{
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggleBtn;
     private FloatingActionButton fab;
+    private ProgressBar listItemProgressBar;
 
     private RecyclerView recyclerView;
     private List<ListItem> listItems;
@@ -53,29 +57,31 @@ public class Dashboard extends AppCompatActivity{
 
         // Initializing recycler view and listItems
         recyclerView = findViewById(R.id.recyclerView);
+        listItemProgressBar = findViewById(R.id.listItemProgressBar);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        listItemProgressBar.setVisibility(VISIBLE);
         listItems = new ArrayList<>();
     }
 
     @SuppressLint("RtlHardcoded")
     public void loadFrequentlyUsed(MenuItem item) {
-        fab.setVisibility(View.GONE);
-        new populateRecyclerViewTask("frequent", listItems, recyclerView).execute("1","2");
+        fab.setVisibility(GONE);
+        new populateRecyclerViewTask("frequent", listItems, recyclerView, listItemProgressBar).execute("1","2");
         drawerLayout.closeDrawer(LEFT);
     }
 
     @SuppressLint("RtlHardcoded")
     public void loadLocks(MenuItem item) {
-        fab.setVisibility(View.VISIBLE);
-        new populateRecyclerViewTask("locks", listItems, recyclerView).execute("1","2");
+        fab.setVisibility(VISIBLE);
+        new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1","2");
         drawerLayout.closeDrawer(LEFT);
     }
 
     @SuppressLint("RtlHardcoded")
     public void loadCredentials(MenuItem item) {
-        fab.setVisibility(View.VISIBLE);
-        new populateRecyclerViewTask("credentials", listItems, recyclerView).execute("1","2");
+        fab.setVisibility(VISIBLE);
+        new populateRecyclerViewTask("credentials", listItems, recyclerView, listItemProgressBar).execute("1","2");
         drawerLayout.closeDrawer(LEFT);
     }
 
@@ -100,11 +106,13 @@ public class Dashboard extends AppCompatActivity{
         private String response = "";
         private RecyclerView recyclerView;
         private List<ListItem> listItems;
+        private ProgressBar listItemProgressBar;
 
-        private populateRecyclerViewTask(String requestType, List<ListItem> listItems, RecyclerView recyclerView) {
+        private populateRecyclerViewTask(String requestType, List<ListItem> listItems, RecyclerView recyclerView, ProgressBar listItemProgressBar) {
             this.requestType = requestType;
             this.listItems = listItems;
             this.recyclerView = recyclerView;
+            this.listItemProgressBar = listItemProgressBar;
         }
 
         @Override
@@ -142,6 +150,7 @@ public class Dashboard extends AppCompatActivity{
                 } catch (JSONException e) {populateDummyListItems();}
             }
             else populateDummyListItems();
+            listItemProgressBar.setVisibility(GONE);
             recyclerView.setAdapter(new ListItemAdapter(listItems));
         }
     }

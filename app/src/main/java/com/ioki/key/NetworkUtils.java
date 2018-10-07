@@ -1,5 +1,7 @@
 package com.ioki.key;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -23,7 +25,8 @@ public class NetworkUtils {
      *  When required, users/login/ or users/register/ can be appended to it
      *  to generate usage specific URLs
      */
-    final static String IoKi_BASE_URL = "http://www.amone.apps19.com/ioki/";
+    final static String IoKi_HOST_IP = "http://192.168.43.224/";
+    final static String IoKi_BASE_URL = IoKi_HOST_IP + "ioki/api/";
 
     /** Helper function for performPostDataString
      *  Reads a hash map of parameters
@@ -63,7 +66,12 @@ public class NetworkUtils {
 
         URL url;
         // TODO: Add app request identifier in request URL
-        requestURL += "app/";
+        Log.d("ioki", requestURL);
+        try {
+            Log.d("ioki", getPostDataString(postDataParams));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         StringBuilder response = new StringBuilder();
         try {
             url = new URL(requestURL);

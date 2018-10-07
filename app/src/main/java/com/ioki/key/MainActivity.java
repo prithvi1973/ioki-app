@@ -1,6 +1,7 @@
 package com.ioki.key;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -41,13 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void LoginIntoAccount(View view) {
 
-        Intent myIntent = new Intent(MainActivity.this, Dashboard.class);
-        startActivity(myIntent);
-        finish();
-
-         /*String name = mName.getText().toString();
+         String name = mName.getText().toString();
          String password = mPassword.getText().toString();
-         new IOkiLoginTask(view.getContext()).execute(name, password);*/
+         new IOkiLoginTask(view.getContext(),this).execute(name, password);
     }
 
     public void registerNewUser(View view) {
@@ -56,15 +53,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Inner class to invoke POST request for user/login
-    public static class IOkiLoginTask extends AsyncTask<String, Void, String> {
+    private static class IOkiLoginTask extends AsyncTask<String, Void, String> {
 
         // Stores response from server
         String response = "";
         @SuppressLint("StaticFieldLeak")
         private Context context;
+        private Activity act;
 
-        IOkiLoginTask(Context context) {
+        public IOkiLoginTask(Context context, Activity act) {
             this.context = context;
+            this.act = act;
         }
 
         @Override
@@ -89,12 +88,23 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     JSONObject json = new JSONObject(response);
                     JSONArray messages = json.getJSONArray("messages");
-                    for(int i=0; i<messages.length(); i++) {
-                        Toast.makeText(this.context, messages.getJSONObject(i).getString("message"), Toast.LENGTH_LONG).show();
+                    String type = messages.getJSONObject(0).getString("type");
+
+                    if(type.equals("success")) {
+                        Intent myIntent = new Intent(act, Dashboard.class);
+                        act.startActivity(myIntent);
+                        act.finish();
+                        Toast.makeText(this.context,"Login Successful",Toast.LENGTH_SHORT).show();
                     }
+
+                    else {
+                        Toast.makeText(this.context,"Invalid Credentials",Toast.LENGTH_SHORT).show();
+                    }
+
+                    Log.d("ioki", "JSON Response Type: "+type);
                     Log.d("ioki", "JSON Response: "+response);
                 } catch (JSONException e) {
-                    Toast.makeText(this.context, "Couldn't communicate with server", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this.context, "Invalid Server Response", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                     Log.d("ioki", "Invalid Response: "+response);
                 }

@@ -39,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
         mPassword = findViewById(R.id.password);
         mSharedPreferences= getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 
+        if(!(mSharedPreferences.getString(USERNAME,null).equals(null) ||
+                mSharedPreferences.getString(PASSWORD,null).equals(null) ||
+                mSharedPreferences.getString(RESPONSE,null).equals(null))){
+            Intent intent = new Intent(this, Dashboard.class);
+            startActivity(intent);
+        }
+
         /*Intent afterRegistration = getIntent();
         if(afterRegistration.hasExtra("name") && afterRegistration.hasExtra("password")){
             String name= afterRegistration.getStringExtra("name");
@@ -114,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = mSharedPreferences.edit();
                         Gson gson = new Gson();
                         String JSON = gson.toJson(resObj);
-                        editor.putString("MyObject", JSON);
+                        editor.putString("RESPONSE", JSON);
                         editor.apply();
                     }
 

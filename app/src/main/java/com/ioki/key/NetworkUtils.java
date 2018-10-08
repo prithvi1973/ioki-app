@@ -51,7 +51,6 @@ public class NetworkUtils {
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
 
-
 //        String oldSessionVars = mSharedPreferences.getString(RESPONSE, null);
 
         String oldSessionVars = getPreferenceObject().getPreferences(RESPONSE);

@@ -164,7 +164,7 @@ public class Dashboard extends AppCompatActivity{
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.apply();
-        startActivity();
+        startActivity(intent);
         finish();
     }
 

@@ -30,24 +30,88 @@ public class User {
     public static String status;
     private static boolean registered;
 
-    User() {
+    private static String response;
+
+    public User() {
+        username = "";
+        name = "";
+        password = "";
+        mobile = "";
+        PIN = "";
+        email = "";
+        status = "";
         registered = false;
     }
-
-    public static void setUsername(String username) {User.username = username;}
-    public static void setName(String name) {User.name = name;}
-    public static void setPassword(String password) {User.password = password;}
-    public static void setMobile(String mobile) {User.mobile = mobile;}
-    public static void setPIN(String PIN) {User.PIN = PIN;}
-    public static void setEmail(String email) {User.email = email;}
 
     public static String getUsername() {
         return username;
     }
 
+    public static void setUsername(String username) {
+        User.username = username;
+    }
+
+    public static String getName() {
+        return name;
+    }
+
+    public static void setName(String name) {
+        User.name = name;
+    }
+
     public static String getPassword() {
         return password;
     }
+
+    public static void setPassword(String password) {
+        User.password = password;
+    }
+
+    public static String getMobile() {
+        return mobile;
+    }
+
+    public static void setMobile(String mobile) {
+        User.mobile = mobile;
+    }
+
+    public static String getPIN() {
+        return PIN;
+    }
+
+    public static void setPIN(String PIN) {
+        User.PIN = PIN;
+    }
+
+    public static String getEmail() {
+        return email;
+    }
+
+    public static void setEmail(String email) {
+        User.email = email;
+    }
+
+    public static void setStatus(String status) {
+        User.status = status;
+    }
+
+    public static boolean isRegistered() {
+        return registered;
+    }
+
+    public static void setRegistered(boolean registered) {
+        User.registered = registered;
+    }
+
+    public static String getResponse() {
+        return response;
+    }
+
+    public static void setResponse(String response) {
+        User.response = response;
+    }
+
+
 
     public static void writeLocalDB() {
         // Logging messages temporarily

@@ -133,8 +133,6 @@ public class Dashboard extends AppCompatActivity{
         protected String doInBackground(String... params) {
             // Making map of POST parameters
             HashMap<String, String> dataParams = new HashMap<>();
-            dataParams.put("username", params[0]);
-            dataParams.put("password",params[1]);
             dataParams.put("submit","1");
 
             // Generating URL for POST request

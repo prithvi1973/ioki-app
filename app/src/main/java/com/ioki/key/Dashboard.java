@@ -103,10 +103,12 @@ public class Dashboard extends AppCompatActivity{
 
     public void logout(MenuItem item){
         Intent intent = new Intent(this, MainActivity.class);
-        SharedPreferences preferences = MainActivity.mSharedPreferences;
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.clear();
-        editor.apply();
+//        SharedPreferences preferences = MainActivity.mSharedPreferences;
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.clear();
+//        editor.apply();
+
+        MainActivity.preferenceObject.removeAllSharedPreferences();
         startActivity(intent);
         finish();
     }

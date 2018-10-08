@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 import static com.ioki.key.MainActivity.RESPONSE;
 import static com.ioki.key.MainActivity.mSharedPreferences;
+import static com.ioki.key.MainActivity.preferenceObject;
 
 /**
  * These utilities will be used to communicate with the server.
@@ -50,9 +51,13 @@ public class NetworkUtils {
         }
 
 
-        String oldSessionVars = mSharedPreferences.getString(RESPONSE, null);
-        result.append("&session=" + oldSessionVars);
+//        String oldSessionVars = mSharedPreferences.getString(RESPONSE, null);
 
+        String oldSessionVars = preferenceObject.getPreferences(RESPONSE);
+
+        if(!oldSessionVars.equals("DEFAULT")){
+            result.append("&session=" + oldSessionVars);
+        }
         return result.toString();
     }
 

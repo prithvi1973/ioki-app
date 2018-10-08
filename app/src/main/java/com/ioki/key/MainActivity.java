@@ -23,9 +23,13 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Context mContext;
     private EditText mName;
     private EditText mPassword;
     public static SharedPreferences mSharedPreferences;
+
+    // newly created default shared preference
+    public static UserDefinedSharedPreference preferenceObject;
 
     static final String USERNAME = "usernameKey";
     static final String PASSWORD = "passwordKey";
@@ -37,28 +41,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = this;
         mName = findViewById(R.id.name);
         mPassword = findViewById(R.id.password);
         mSharedPreferences= getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 
-        String spUsername = mSharedPreferences.getString(USERNAME,null);
-        String spPassword = mSharedPreferences.getString(PASSWORD,null);
-        String spResponse = mSharedPreferences.getString(RESPONSE,null);
+        // newly created preference object
+        preferenceObject = new UserDefinedSharedPreference(mContext);
+
+        String spUsername = preferenceObject.getPreferences(USERNAME);
+        String spPassword = preferenceObject.getPreferences(PASSWORD);
+        String spResponse = preferenceObject.getPreferences(USERNAME);
+
+//        String spUsername = mSharedPreferences.getString(USERNAME,null);
+//        String spPassword = mSharedPreferences.getString(PASSWORD,null);
+//        String spResponse = mSharedPreferences.getString(RESPONSE,null);
         Log.d("ioki-debug",spUsername+" | "+spPassword+" | "+spResponse);
 
-        if(mSharedPreferences.contains(USERNAME) && mSharedPreferences.contains(PASSWORD) &&
-                mSharedPreferences.contains(RESPONSE)){
+//        if(mSharedPreferences.contains(USERNAME) && mSharedPreferences.contains(PASSWORD) &&
+//                mSharedPreferences.contains(RESPONSE)){
+//            Intent intent = new Intent(this, Dashboard.class);
+//            startActivity(intent);
+//        }
+
+        // redirecting to dashboard if data is already present in shared preferences
+        if(!spUsername.equals("DEAFULT") && !spPassword.equals("DEFAULT") && !spResponse.equals("Default")){
             Intent intent = new Intent(this, Dashboard.class);
             startActivity(intent);
         }
-
-        /*Intent afterRegistration = getIntent();
-        if(afterRegistration.hasExtra("name") && afterRegistration.hasExtra("password")){
-            String name= afterRegistration.getStringExtra("name");
-            String password = afterRegistration.getStringExtra("password");
-            mName.setText(name);
-            mPassword.setText(password);
-        }*/
     }
 
     public void LoginIntoAccount(View view) {
@@ -126,11 +136,16 @@ public class MainActivity extends AppCompatActivity {
 
                     Response resObj = new Response(json);
                     if(resObj.isValid()) {
-                        SharedPreferences.Editor editor = mSharedPreferences.edit();
-                        editor.putString(RESPONSE, response);
-                        editor.putString(USERNAME, User.getUsername());
-                        editor.putString(PASSWORD, User.getPassword());
-                        editor.apply();
+//                        SharedPreferences.Editor editor = mSharedPreferences.edit();
+//                        editor.putString(RESPONSE, response);
+//                        editor.putString(USERNAME, User.getUsername());
+//                        editor.putString(PASSWORD, User.getPassword());
+//                        editor.apply();
+
+                        preferenceObject.saveData(RESPONSE, response);
+                        preferenceObject.saveData(USERNAME, User.getUsername());
+                        preferenceObject.saveData(PASSWORD, User.getPassword());
+
                     }
 
                     Log.d("ioki-debug", "JSON Response Type: "+type);

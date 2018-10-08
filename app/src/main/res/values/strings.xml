@@ -23,4 +23,10 @@
     <string name="logout">Logout</string>
     <string name="nav_header_text">Prithvi Anand</string>
     <string name="enter_otp_here">Enter OTP</string>
+    <string name="lock_id_editTextView">Enter Lock ID</string>
+    <string name="lock_name_editTextView">Enter Name</string>
+    <string name="submit">Submit</string>
+    <string name="enter_link">Enter Link</string>
+    <string name="login">Login</string>
+    <string name="type">Type</string>
 </resources>

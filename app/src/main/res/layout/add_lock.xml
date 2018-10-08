@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/lock_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/lock_id_editTextView" />
+        <EditText
+            android:id="@+id/lock_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/lock_name_editTextView" />
+        <Button
+            android:id="@+id/addLockSubmitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/submit"
+            android:layout_gravity="end"
+            android:onClick="addANewLock"/>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

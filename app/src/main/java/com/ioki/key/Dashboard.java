@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -146,19 +147,21 @@ public class Dashboard extends AppCompatActivity{
 
         private void populateDummyListItems() {
             for(int i=0; i<3; i++)
-                listItems.add(new ListItem(requestType + " Dummy " + (i+1),"Data not received from server in required format. Populating recycler view with dummy list items."));
+                listItems.add(new ListItem(requestType.toUpperCase() + " Dummy " + (i+1),"Lock/Credential ID" + (i+1)));
         }
 
         @Override
         protected void onPostExecute(String queryResults) {
             listItems.clear();
+            Log.d("ioki-debug", requestType.toUpperCase() + " JSON Response: " + response);
             if (response!= null && !response.equals("")) {
                 try {
                     JSONObject responseJSON = new JSONObject(response);
-                    JSONArray listItemArray = responseJSON.getJSONArray("listItems");
+                    JSONArray listItemArray = responseJSON.getJSONArray("data");
                     for(int i=0; i<listItemArray.length(); i++) {
                         JSONObject listItemObject = listItemArray.getJSONObject(i);
-                        listItems.add(new ListItem(listItemObject.getString("heading"), listItemObject.getString("description ")));
+                        Log.d("ioki-debug", listItemObject.getString("name") + " | " + listItemObject.getString("id"));
+                        listItems.add(new ListItem(listItemObject.getString("name"), listItemObject.getString("id")));
                     }
                 } catch (JSONException e) {populateDummyListItems();}
             }

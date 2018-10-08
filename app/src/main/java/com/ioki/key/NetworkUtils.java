@@ -46,12 +46,9 @@ public class NetworkUtils {
             result.append("=");
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
-        /* *
-         * TODO: Fetch SESSION variables into POST Request parameters for updation
-         * To maintain session variables as in browser, we need to update them
-         * every time, a request is sent by the user. They have to stored either
-         * in the AppData/RAM (not yet finalized where to store)
-         * */
+
+        String oldSessionVars = fetchSesionFromAppData();
+        result.append("&session=" + oldSessionVars);
 
         return result.toString();
     }

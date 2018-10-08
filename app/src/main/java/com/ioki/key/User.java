@@ -6,11 +6,8 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.HashMap;
-
 import static com.ioki.key.MainActivity.getPreferenceObject;
-import static com.ioki.key.MainActivity.preferenceObject;
 
 /**
  * Handles registration process
@@ -163,16 +160,8 @@ public class User {
                     User.status = messages.getJSONObject(0).getString("message");
                     if(status.equals("You have been successfully registered. Confirm your email, and login again")){
                         registered = true;
-
-//                        SharedPreferences sharedPreferences = MainActivity.mSharedPreferences;
-//                        SharedPreferences.Editor editor = sharedPreferences.edit();
-//                        editor.putString(MainActivity.USERNAME, User.username);
-//                        editor.putString(MainActivity.PASSWORD, User.password);
-//                        editor.apply();
-
                         getPreferenceObject().saveData(MainActivity.USERNAME, User.getUsername());
                         getPreferenceObject().saveData(MainActivity.PASSWORD, User.getPassword());
-
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

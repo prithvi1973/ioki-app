@@ -18,7 +18,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 import static com.ioki.key.MainActivity.RESPONSE;
 import static com.ioki.key.MainActivity.getPreferenceObject;
-import static com.ioki.key.MainActivity.preferenceObject;
 
 /**
  * These utilities will be used to communicate with the server.
@@ -51,11 +50,10 @@ public class NetworkUtils {
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
 
-//        String oldSessionVars = mSharedPreferences.getString(RESPONSE, null);
-
         String oldSessionVars = getPreferenceObject().getPreferences(RESPONSE);
+        String defaultValue = "DEFAULT";
 
-        if(!oldSessionVars.equals("DEFAULT")){
+        if(!oldSessionVars.equals(defaultValue)){
             result.append("&session=" + oldSessionVars);
         }
         return result.toString();

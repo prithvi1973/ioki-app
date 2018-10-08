@@ -29,7 +29,6 @@ import static android.view.Gravity.LEFT;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.ioki.key.MainActivity.getPreferenceObject;
-import static com.ioki.key.MainActivity.preferenceObject;
 
 public class Dashboard extends AppCompatActivity{
 
@@ -37,7 +36,6 @@ public class Dashboard extends AppCompatActivity{
     private ActionBarDrawerToggle toggleBtn;
     private FloatingActionButton fab;
     private ProgressBar listItemProgressBar;
-
     private RecyclerView recyclerView;
     private List<ListItem> listItems;
 
@@ -102,11 +100,6 @@ public class Dashboard extends AppCompatActivity{
 
     public void logout(MenuItem item){
         Intent intent = new Intent(this, MainActivity.class);
-//        SharedPreferences preferences = MainActivity.mSharedPreferences;
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.clear();
-//        editor.apply();
-
         getPreferenceObject().removeAllSharedPreferences();
         startActivity(intent);
         finish();

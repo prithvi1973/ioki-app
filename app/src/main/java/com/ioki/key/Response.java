@@ -92,4 +92,35 @@ public class Response {
         return responseValidity;
     }
 
+    public boolean isResponseValidity() {
+        return responseValidity;
+    }
+
+    public String getErrors() {
+        return errors;
+    }
+
+    public String[] getMessages() {
+        return messages;
+    }
+
+    public String getValid() {
+        return valid;
+    }
+
+    public boolean isLink() {
+        return link;
+    }
+
+    public String getView() {
+        return view;
+    }
+
+    public String[] getData() {
+        return data;
+    }
+
+    public String[] getSession() {
+        return session;
+    }
 }

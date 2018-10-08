@@ -26,9 +26,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText mName;
     private EditText mPassword;
     static SharedPreferences mSharedPreferences;
+
     static final String USERNAME = "usernameKey";
     static final String PASSWORD = "passwordKey";
     static final String RESPONSE = "responseKey";
+
     public static final String PREFERENCES = "preferenceKey";
 
     @Override
@@ -105,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
                     String type = messages.getJSONObject(0).getString("type");
 
                     if(type.equals("success")) {
+                        User.setUsername(json.getJSONObject("session").getString("user"));
+                        User.setPassword(json.getJSONObject("session").getString("pass"));
                         Intent myIntent = new Intent(act, Dashboard.class);
                         act.startActivity(myIntent);
                         act.finish();
@@ -118,24 +122,22 @@ public class MainActivity extends AppCompatActivity {
                     Response resObj = new Response(json);
                     if(resObj.isValid()) {
                         SharedPreferences.Editor editor = mSharedPreferences.edit();
-                        Gson gson = new Gson();
-                        String JSON = gson.toJson(resObj);
-                        editor.putString(RESPONSE, JSON);
+                        editor.putString(RESPONSE, response);
                         editor.putString(USERNAME, User.getUsername());
                         editor.putString(PASSWORD, User.getPassword());
                         editor.apply();
                     }
 
-                    Log.d("ioki", "JSON Response Type: "+type);
-                    Log.d("ioki", "JSON Response: "+response);
+                    Log.d("ioki-debug", "JSON Response Type: "+type);
+                    Log.d("ioki-debug", "JSON Response: "+response);
                 } catch (JSONException e) {
                     Toast.makeText(this.context, "Invalid Server Response", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
-                    Log.d("ioki", "Invalid Response: "+response);
+                    Log.d("ioki-debug", "Invalid Response: "+response);
                 }
             }else{
                 Toast.makeText(this.context, "Couldn't communicate with server", Toast.LENGTH_LONG).show();
-                Log.d("ioki","No results fetched from user/");
+                Log.d("ioki-debug","No results fetched from user/");
             }
         }
     }

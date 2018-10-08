@@ -68,21 +68,21 @@ public class Dashboard extends AppCompatActivity{
     @SuppressLint("RtlHardcoded")
     public void loadFrequentlyUsed(MenuItem item) {
         fab.setVisibility(GONE);
-        new populateRecyclerViewTask("frequent", listItems, recyclerView, listItemProgressBar).execute("1","2");
+        new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
         drawerLayout.closeDrawer(LEFT);
     }
 
     @SuppressLint("RtlHardcoded")
     public void loadLocks(MenuItem item) {
         fab.setVisibility(VISIBLE);
-        new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1","2");
+        new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
         drawerLayout.closeDrawer(LEFT);
     }
 
     @SuppressLint("RtlHardcoded")
     public void loadCredentials(MenuItem item) {
         fab.setVisibility(VISIBLE);
-        new populateRecyclerViewTask("credentials", listItems, recyclerView, listItemProgressBar).execute("1","2");
+        new populateRecyclerViewTask("credentials", listItems, recyclerView, listItemProgressBar).execute("1");
         drawerLayout.closeDrawer(LEFT);
     }
 
@@ -149,11 +149,23 @@ public class Dashboard extends AppCompatActivity{
             if (response!= null && !response.equals("")) {
                 try {
                     JSONObject responseJSON = new JSONObject(response);
-                    JSONArray listItemArray = responseJSON.getJSONArray("data");
-                    for(int i=0; i<listItemArray.length(); i++) {
-                        JSONObject listItemObject = listItemArray.getJSONObject(i);
-                        Log.d("ioki-debug", listItemObject.getString("name") + " | " + listItemObject.getString("id"));
-                        listItems.add(new ListItem(listItemObject.getString("name"), listItemObject.getString("id")));
+
+                    if(requestType.equals("locks")) {
+                        JSONArray listItemArray = responseJSON.getJSONArray("data");
+                        for (int i = 0; i < listItemArray.length(); i++) {
+                            JSONObject listItemObject = listItemArray.getJSONObject(i);
+                            Log.d("ioki-debug", listItemObject.getString("name") + " | " + listItemObject.getString("id"));
+                            listItems.add(new ListItem(listItemObject.getString("name"), listItemObject.getString("id")));
+                        }
+                    }
+                    else if(requestType.equals("credentials")) {
+                        JSONArray encrypted = responseJSON.getJSONObject("data").getJSONArray("encrypted");
+                        JSONArray decrypted = responseJSON.getJSONObject("data").getJSONArray("decrypted");
+                        for(int i=0; i < encrypted.length(); i++) {
+                            JSONObject enc = encrypted.getJSONObject(i);
+                            JSONObject dec = decrypted.getJSONObject(i);
+                            listItems.add(new ListItem(dec.getString("login"), enc.getString("link")));
+                        }
                     }
                 } catch (JSONException e) {populateDummyListItems();}
             }

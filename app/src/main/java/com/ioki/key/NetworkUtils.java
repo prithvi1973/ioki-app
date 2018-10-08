@@ -2,6 +2,9 @@ package com.ioki.key;
 
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -50,11 +53,18 @@ public class NetworkUtils {
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
 
+//        String oldSessionVars = mSharedPreferences.getString(RESPONSE, null);
+
         String oldSessionVars = getPreferenceObject().getPreferences(RESPONSE);
         String defaultValue = "DEFAULT";
-
         if(!oldSessionVars.equals(defaultValue)){
-            result.append("&session=" + oldSessionVars);
+            try {
+                JSONObject ob = new JSONObject(oldSessionVars);
+                result.append("&session=" + ob.getJSONObject("session").toString());
+            } catch (JSONException e) {
+                Log.d("ioki-debug", "Invalid Response");
+                e.printStackTrace();
+            }
         }
         return result.toString();
     }
@@ -65,7 +75,7 @@ public class NetworkUtils {
      * Fetches response stream
      * Builds and returns response as string
      */
-    public static String  performPostCall(String requestURL, HashMap<String, String> postDataParams) {
+    public static String performPostCall(String requestURL, HashMap<String, String> postDataParams) {
 
         URL url;
         // TODO: Add app request identifier in request URL

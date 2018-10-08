@@ -41,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
         mPassword = findViewById(R.id.password);
         mSharedPreferences= getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 
+        String spUsername = mSharedPreferences.getString(USERNAME,null);
+        String spPassword = mSharedPreferences.getString(PASSWORD,null);
+        String spResponse = mSharedPreferences.getString(RESPONSE,null);
+        Log.d("ioki-debug",spUsername+" | "+spPassword+" | "+spResponse);
+
         if(mSharedPreferences.contains(USERNAME) && mSharedPreferences.contains(PASSWORD) &&
                 mSharedPreferences.contains(RESPONSE)){
             Intent intent = new Intent(this, Dashboard.class);

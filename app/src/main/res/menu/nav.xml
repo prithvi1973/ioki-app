@@ -24,5 +24,11 @@
             android:orderInCategory="4"
             android:title="@string/settings"
             android:icon="@mipmap/baseline_settings_black_24"/>
+        <item
+            android:id="@+id/navBar_logout"
+            android:icon="@mipmap/baseline_undo_black_24"
+            android:onClick="logout"
+            android:orderInCategory="5"
+            android:title="@string/logout" />
     </group>
 </menu>

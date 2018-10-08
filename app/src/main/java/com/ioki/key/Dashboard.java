@@ -100,6 +100,16 @@ public class Dashboard extends AppCompatActivity{
         return toggleBtn.onOptionsItemSelected(item);
     }
 
+    public void logout(MenuItem item){
+        Intent intent = new Intent(this, MainActivity.class);
+        SharedPreferences preferences = MainActivity.mSharedPreferences;
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+        startActivity(intent);
+        finish();
+    }
+
     @SuppressLint("StaticFieldLeak")
     // Inner class to invoke POST request for fetching list items
     public static class populateRecyclerViewTask extends AsyncTask<String, Void, String> {
@@ -156,16 +166,6 @@ public class Dashboard extends AppCompatActivity{
             listItemProgressBar.setVisibility(GONE);
             recyclerView.setAdapter(new ListItemAdapter(listItems));
         }
-    }
-
-    void logout(){
-        Intent intent = new Intent(this, MainActivity.class);
-        SharedPreferences preferences = MainActivity.mSharedPreferences;
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.clear();
-        editor.apply();
-        startActivity(intent);
-        finish();
     }
 
  }

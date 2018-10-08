@@ -139,7 +139,7 @@ public class Dashboard extends AppCompatActivity{
 
         private void populateDummyListItems() {
             for(int i=0; i<3; i++)
-                listItems.add(new ListItem(requestType.toUpperCase() + " Dummy " + (i+1),"Lock/Credential ID" + (i+1)));
+                listItems.add(new ListItem(requestType.toUpperCase() + " Dummy " + (i+1),"Lock/Credential ID" + (i+1), requestType));
         }
 
         @Override
@@ -155,7 +155,7 @@ public class Dashboard extends AppCompatActivity{
                         for (int i = 0; i < listItemArray.length(); i++) {
                             JSONObject listItemObject = listItemArray.getJSONObject(i);
                             Log.d("ioki-debug", listItemObject.getString("name") + " | " + listItemObject.getString("id"));
-                            listItems.add(new ListItem(listItemObject.getString("name"), listItemObject.getString("id")));
+                            listItems.add(new ListItem(listItemObject.getString("name"), listItemObject.getString("id"), requestType));
                         }
                     }
                     else if(requestType.equals("credentials")) {
@@ -164,7 +164,7 @@ public class Dashboard extends AppCompatActivity{
                         for(int i=0; i < encrypted.length(); i++) {
                             JSONObject enc = encrypted.getJSONObject(i);
                             JSONObject dec = decrypted.getJSONObject(i);
-                            listItems.add(new ListItem(dec.getString("login"), enc.getString("link")));
+                            listItems.add(new ListItem(dec.getString("login"), enc.getString("link"), requestType));
                         }
                     }
                 } catch (JSONException e) {populateDummyListItems();}

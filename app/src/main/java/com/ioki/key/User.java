@@ -6,7 +6,9 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.HashMap;
+
 import static com.ioki.key.MainActivity.getPreferenceObject;
 
 /**

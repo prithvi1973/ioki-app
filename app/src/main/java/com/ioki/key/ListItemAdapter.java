@@ -30,7 +30,9 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
         final ListItem listItem = listItems.get(position);
         holder.heading.setText(listItem.getHeading());
         holder.description.setText(listItem.getDescription());
+        if(listItem.getRequestType().equals("credentials")) holder.actionButton.setVisibility(View.GONE);
     }
+
 
     @Override
     public int getItemCount() {

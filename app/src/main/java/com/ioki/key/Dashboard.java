@@ -1,6 +1,9 @@
 package com.ioki.key;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -154,4 +157,13 @@ public class Dashboard extends AppCompatActivity{
             recyclerView.setAdapter(new ListItemAdapter(listItems));
         }
     }
+
+    void logout(){
+        Intent intent = new Intent(this, MainActivity.class);
+        SharedPreferences preferences = MainActivity.mSharedPreferences;
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+
  }

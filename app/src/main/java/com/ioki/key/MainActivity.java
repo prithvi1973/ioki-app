@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText mName;
     private EditText mPassword;
-    private static SharedPreferences mSharedPreferences;
+    public static SharedPreferences mSharedPreferences;
 
     static final String USERNAME = "usernameKey";
     static final String PASSWORD = "passwordKey";

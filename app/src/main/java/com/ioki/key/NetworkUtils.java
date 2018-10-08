@@ -1,5 +1,7 @@
 package com.ioki.key;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -13,8 +15,12 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-
+import android.content.SharedPreferences;
 import javax.net.ssl.HttpsURLConnection;
+
+import static com.ioki.key.MainActivity.PREFERENCES;
+import static com.ioki.key.MainActivity.RESPONSE;
+import static com.ioki.key.MainActivity.mSharedPreferences;
 
 /**
  * These utilities will be used to communicate with the server.
@@ -47,7 +53,7 @@ public class NetworkUtils {
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
 
-        String oldSessionVars = fetchSesionFromAppData();
+        String oldSessionVars = mSharedPreferences.getString(RESPONSE, null);
         result.append("&session=" + oldSessionVars);
 
         return result.toString();

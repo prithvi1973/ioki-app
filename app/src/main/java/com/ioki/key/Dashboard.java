@@ -1,9 +1,7 @@
 package com.ioki.key;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ProgressBar;
 
 import org.json.JSONArray;
@@ -31,6 +28,8 @@ import java.util.List;
 import static android.view.Gravity.LEFT;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.ioki.key.MainActivity.getPreferenceObject;
+import static com.ioki.key.MainActivity.preferenceObject;
 
 public class Dashboard extends AppCompatActivity{
 
@@ -108,7 +107,7 @@ public class Dashboard extends AppCompatActivity{
 //        editor.clear();
 //        editor.apply();
 
-        MainActivity.preferenceObject.removeAllSharedPreferences();
+        getPreferenceObject().removeAllSharedPreferences();
         startActivity(intent);
         finish();
     }

@@ -1,7 +1,5 @@
 package com.ioki.key;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -11,7 +9,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-import static com.ioki.key.MainActivity.PREFERENCES;
+import static com.ioki.key.MainActivity.getPreferenceObject;
+import static com.ioki.key.MainActivity.preferenceObject;
 
 /**
  * Handles registration process
@@ -157,21 +156,22 @@ public class User {
 
         @Override
         protected void onPostExecute(String queryResults) {
-            if ((response!= null && !response.equals("")) || response.equals("DEFAULT")) {
+            if ((response!= null && !response.equals(""))) {
                 try {
                     JSONObject json = new JSONObject(response);
                     JSONArray messages = json.getJSONArray("messages");
                     User.status = messages.getJSONObject(0).getString("message");
                     if(status.equals("You have been successfully registered. Confirm your email, and login again")){
                         registered = true;
+
 //                        SharedPreferences sharedPreferences = MainActivity.mSharedPreferences;
 //                        SharedPreferences.Editor editor = sharedPreferences.edit();
 //                        editor.putString(MainActivity.USERNAME, User.username);
 //                        editor.putString(MainActivity.PASSWORD, User.password);
 //                        editor.apply();
 
-                        MainActivity.preferenceObject.saveData(MainActivity.USERNAME, User.getUsername());
-                        MainActivity.preferenceObject.saveData(MainActivity.PASSWORD, User.getPassword());
+                        getPreferenceObject().saveData(MainActivity.USERNAME, User.getUsername());
+                        getPreferenceObject().saveData(MainActivity.PASSWORD, User.getPassword());
 
                     }
                 } catch (JSONException e) {

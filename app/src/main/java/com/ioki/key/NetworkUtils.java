@@ -1,8 +1,7 @@
 package com.ioki.key;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -14,9 +13,11 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.net.ssl.HttpsURLConnection;
+
 import static com.ioki.key.MainActivity.RESPONSE;
-import static com.ioki.key.MainActivity.mSharedPreferences;
+import static com.ioki.key.MainActivity.getPreferenceObject;
 import static com.ioki.key.MainActivity.preferenceObject;
 
 /**
@@ -53,7 +54,7 @@ public class NetworkUtils {
 
 //        String oldSessionVars = mSharedPreferences.getString(RESPONSE, null);
 
-        String oldSessionVars = preferenceObject.getPreferences(RESPONSE);
+        String oldSessionVars = getPreferenceObject().getPreferences(RESPONSE);
 
         if(!oldSessionVars.equals("DEFAULT")){
             result.append("&session=" + oldSessionVars);

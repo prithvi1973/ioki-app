@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 public class UserDefinedSharedPreference {
     private Context context;
 
-    public UserDefinedSharedPreference(Context ctx){
+    UserDefinedSharedPreference(Context ctx){
         context = ctx;
     }
 

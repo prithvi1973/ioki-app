@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences mSharedPreferences;
 
     // newly created default shared preference
-    public static UserDefinedSharedPreference preferenceObject;
+    private static UserDefinedSharedPreference preferenceObject;
 
     static final String USERNAME = "usernameKey";
     static final String PASSWORD = "passwordKey";
@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
         mContext = this;
         mName = findViewById(R.id.name);
         mPassword = findViewById(R.id.password);
-        mSharedPreferences= getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+
+        //mSharedPreferences= getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
 
         // newly created preference object
         preferenceObject = new UserDefinedSharedPreference(mContext);
@@ -69,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, Dashboard.class);
             startActivity(intent);
         }
+    }
+
+    public static UserDefinedSharedPreference getPreferenceObject() {
+        return preferenceObject;
     }
 
     public void LoginIntoAccount(View view) {

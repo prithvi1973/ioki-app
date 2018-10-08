@@ -3,7 +3,6 @@ package com.ioki.key;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -15,14 +14,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import android.content.SharedPreferences;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import javax.net.ssl.HttpsURLConnection;
-
-import static com.ioki.key.MainActivity.PREFERENCES;
 import static com.ioki.key.MainActivity.RESPONSE;
 import static com.ioki.key.MainActivity.mSharedPreferences;
 
@@ -57,19 +49,9 @@ public class NetworkUtils {
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
 
-        String oldSessionVars = "";
-        try {
-            oldSessionVars = new JSONObject(User.getResponse()).getJSONObject("session").toString();
-        } catch (JSONException e) {
-            Log.d("ioki-debug", "Exception");
-            e.printStackTrace();
-        }
 
-        if(!oldSessionVars.isEmpty()) {
-            result.append("&session=" + oldSessionVars);
-            Log.d("ioki-debug", "User " + User.getResponse());
-            Log.d("ioki-debug", result.toString());
-        }
+        String oldSessionVars = mSharedPreferences.getString(RESPONSE, null);
+        result.append("&session=" + oldSessionVars);
 
         return result.toString();
     }
@@ -84,6 +66,12 @@ public class NetworkUtils {
 
         URL url;
         // TODO: Add app request identifier in request URL
+        Log.d("ioki", requestURL);
+        try {
+            Log.d("ioki", getPostDataString(postDataParams));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         StringBuilder response = new StringBuilder();
         try {
             url = new URL(requestURL);

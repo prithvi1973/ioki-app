@@ -162,7 +162,7 @@ public class User {
                     JSONObject json = new JSONObject(response);
                     JSONArray messages = json.getJSONArray("messages");
                     User.status = messages.getJSONObject(0).getString("message");
-                    if(status=="You have been successfully registered. Confirm your email, and login again"){
+                    if(status.equals("You have been successfully registered. Confirm your email, and login again")){
                         registered = true;
                         SharedPreferences sharedPreferences = MainActivity.mSharedPreferences;
                         SharedPreferences.Editor editor = sharedPreferences.edit();

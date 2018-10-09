@@ -18,7 +18,7 @@ public class Client extends AsyncTask<Void, Void, String> {
     private static final String userId = "p3R5gPSUFUI=";
     private static String lockId = "1";
     private int command = 0;
-    String response;
+    private String response;
 
     public interface AsyncResponse {
         void processFinish(String output);
@@ -77,7 +77,7 @@ public class Client extends AsyncTask<Void, Void, String> {
             e.printStackTrace();
         }
 
-            return response;
+        return response;
 }
 
     @Override

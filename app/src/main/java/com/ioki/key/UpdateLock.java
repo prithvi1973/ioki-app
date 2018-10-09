@@ -22,8 +22,6 @@ public class UpdateLock extends AppCompatActivity {
         String newName = name.getText().toString();
         // TODO: Send this to the server
 
-        Intent intent = new Intent();
-        startActivity(intent);
         finish();
     }
 }

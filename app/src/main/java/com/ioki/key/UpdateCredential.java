@@ -58,8 +58,7 @@ public class UpdateCredential extends AppCompatActivity implements AdapterView.O
         }
         else{
             // TODO: Update old credential on the server
-            Intent intent = new Intent(this, Dashboard.class);
-            startActivity(intent);
+
             finish();
         }
     }

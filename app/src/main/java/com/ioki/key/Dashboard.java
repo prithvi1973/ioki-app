@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import org.json.JSONArray;
@@ -38,6 +39,7 @@ public class Dashboard extends AppCompatActivity{
     private ProgressBar listItemProgressBar;
     private RecyclerView recyclerView;
     private List<ListItem> listItems;
+    private String currView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class Dashboard extends AppCompatActivity{
 
     @SuppressLint("RtlHardcoded")
     public void loadFrequentlyUsed(MenuItem item) {
+        currView = "frequent";
         fab.setVisibility(GONE);
         new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
         drawerLayout.closeDrawer(LEFT);
@@ -74,6 +77,7 @@ public class Dashboard extends AppCompatActivity{
 
     @SuppressLint("RtlHardcoded")
     public void loadLocks(MenuItem item) {
+        currView = "locks";
         fab.setVisibility(VISIBLE);
         new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
         drawerLayout.closeDrawer(LEFT);
@@ -81,6 +85,7 @@ public class Dashboard extends AppCompatActivity{
 
     @SuppressLint("RtlHardcoded")
     public void loadCredentials(MenuItem item) {
+        currView = "credentials";
         fab.setVisibility(VISIBLE);
         new populateRecyclerViewTask("credentials", listItems, recyclerView, listItemProgressBar).execute("1");
         drawerLayout.closeDrawer(LEFT);
@@ -103,6 +108,20 @@ public class Dashboard extends AppCompatActivity{
         getPreferenceObject().removeAllSharedPreferences();
         startActivity(intent);
         finish();
+    }
+
+    public void addNew(View view) {
+        Intent i;
+        if(currView.equals("locks")) {
+            Log.d("ioki-debug", "Inside Locks");
+            i = new Intent(view.getContext(),AddLock.class);
+            startActivity(i);
+        }
+        else if(currView.equals("credentials")) {
+            Log.d("ioki-debug", "Inside Credentials");
+            i = new Intent(view.getContext(),AddCredential.class);
+            startActivity(i);
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -139,7 +158,7 @@ public class Dashboard extends AppCompatActivity{
 
         private void populateDummyListItems() {
             for(int i=0; i<3; i++)
-                listItems.add(new ListItem(requestType.toUpperCase() + " Dummy " + (i+1),"Lock/Credential ID" + (i+1), requestType));
+                listItems.add(new ListItem(requestType.toUpperCase() + " Dummy " + (i+1),"Lock/Credential ID" + (i+1), requestType, String.valueOf(i+1)));
         }
 
         @Override
@@ -155,7 +174,7 @@ public class Dashboard extends AppCompatActivity{
                         for (int i = 0; i < listItemArray.length(); i++) {
                             JSONObject listItemObject = listItemArray.getJSONObject(i);
                             Log.d("ioki-debug", listItemObject.getString("name") + " | " + listItemObject.getString("id"));
-                            listItems.add(new ListItem(listItemObject.getString("name"), listItemObject.getString("id"), requestType));
+                            listItems.add(new ListItem(listItemObject.getString("name"), listItemObject.getString("id"), requestType, listItemObject.getString("id")));
                         }
                     }
                     else if(requestType.equals("credentials")) {
@@ -164,7 +183,7 @@ public class Dashboard extends AppCompatActivity{
                         for(int i=0; i < encrypted.length(); i++) {
                             JSONObject enc = encrypted.getJSONObject(i);
                             JSONObject dec = decrypted.getJSONObject(i);
-                            listItems.add(new ListItem(dec.getString("login"), enc.getString("link"), requestType));
+                            listItems.add(new ListItem(dec.getString("login"), enc.getString("link"), requestType, enc.getString("id")));
                         }
                     }
                 } catch (JSONException e) {populateDummyListItems();}

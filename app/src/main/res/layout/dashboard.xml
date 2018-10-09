@@ -40,7 +40,8 @@
             app:backgroundTint="@android:color/holo_red_dark"
             app:rippleColor="@android:color/holo_red_light"
             app:srcCompat="@drawable/baseline_add_white_24"
-            android:focusable="true" />
+            android:focusable="true"
+            android:onClick="addNew" />
 
         <ProgressBar
             android:id="@+id/listItemProgressBar"

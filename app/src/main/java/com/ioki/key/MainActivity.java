@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 && !spResponse.equals(defaultValue)){
             Intent intent = new Intent(this, Dashboard.class);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -125,17 +126,12 @@ public class MainActivity extends AppCompatActivity {
                         preferenceObject.saveData(USERNAME, User.getUsername());
                         preferenceObject.saveData(PASSWORD, User.getPassword());
                     }
-
-                    Log.d("ioki-debug", "JSON Response Type: "+type);
-                    Log.d("ioki-debug", "JSON Response: "+response);
                 } catch (JSONException e) {
                     Toast.makeText(this.context, "Invalid Server Response", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
-                    Log.d("ioki-debug", "Invalid Response: "+response);
                 }
             }else{
                 Toast.makeText(this.context, "Couldn't communicate with server", Toast.LENGTH_LONG).show();
-                Log.d("ioki-debug","No results fetched from user/");
             }
         }
     }

@@ -78,7 +78,6 @@ public class NetworkUtils {
     public static String performPostCall(String requestURL, HashMap<String, String> postDataParams) {
 
         URL url;
-        // TODO: Add app request identifier in request URL
         Log.d("ioki", requestURL);
         try {
             Log.d("ioki", getPostDataString(postDataParams));

@@ -1,7 +1,7 @@
 package com.ioki.key;
 
 import android.os.AsyncTask;
-import android.view.View;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,63 +9,48 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Scanner;
+import java.util.ArrayList;
 
-public class Client extends AsyncTask<Void, Void, String> {
-    private static final String HOST = "localhost";
+public class Client extends AsyncTask<String, Void, Void> {
+    private static final String HOST = NetworkUtils.IoKi_HOST;
     private static final int PORT = 9292;
-    private static final String userId = "p3R5gPSUFUI=";
-    private static String lockId = "1";
-    private int command = 0;
-    private String response;
+    private ArrayList<String> response;
 
-    public interface AsyncResponse {
-        void processFinish(String output);
-    }
-
-    public AsyncResponse delegate = null;
-
-    public Client(AsyncResponse delegate, String lockId, int command, String response){
-        this.delegate = delegate;
-        lockId = lockId;
-        command = command;
-        response = response;
+    public Client(ArrayList<String> response) {
+        Log.d("ioki-app","Hello");
+        this.response = response;
     }
 
     @Override
-    protected String doInBackground(Void... arg0) {
-
-        response = null;
+    protected Void doInBackground(String... args) {
+        String response = "FAIL";
+        Log.d("ioki-app", "1");
         Socket socket = null;
+        Log.d("ioki-app", "2");
 
         try {
-            socket = new Socket(HOST, PORT);
+            // establishing connection
+            InetAddress serverAddress = InetAddress.getByName(HOST);
+            Log.d("ioki-app", serverAddress.toString());
+            socket = new Socket(serverAddress, PORT);
+            Log.d("ioki-app", "4");
 
-            // getting input output streams
-            PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            // sending command
+            (new PrintWriter(socket.getOutputStream(), true)).println(args[0] + ":" + args[1] + ":" + args[2]);
+            Log.d("ioki-app", "5");
 
-            // checking if the connection is established
-            String serverInput = input.readLine();
-            if (serverInput.equals("PASS")) {
+            // checking response
+            response = (new BufferedReader(new InputStreamReader(socket.getInputStream()))).readLine();
+            Log.d("ioki-app", response);
+            Log.d("ioki-app", args.toString());
+            if (args[2].equals("2"))
+                if (response.equals("L"))
+                    response = "Locked";
+                else if (response.equals("U"))
+                    response = "Unlocked";
+                else response = "FAIL";
 
-                // sending command
-                output.println(userId + ":" + lockId + ":" + command);
-
-                // checking response
-                response = input.readLine();
-                if (response.equals("PASS"))
-                    response = "Success";
-                else if (command == 3) {
-                    if (response.equals("L"))
-                        response = "Locked";
-                    else if (response.equals("U"))
-                        response = "Unlocked";
-                    else response = "Failure";
-                } else response = "Failure";
-            }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -77,38 +62,8 @@ public class Client extends AsyncTask<Void, Void, String> {
             e.printStackTrace();
         }
 
-        return response;
-}
-
-    @Override
-    protected void onPostExecute(String result) {
-        delegate.processFinish(result);
+        // returning result
+        this.response.add(response);
+        return null;
     }
 }
-
-
-// TODO:  in the on click method of lock, write this code
-// TODO: this class will implement AsyncResponse
-//    @Override
-//    public void onClick(View arg0) {
-//        // get lockid from response "lockid"
-//        Scanner sc = new Scanner(System.in);
-//        int command;
-//        do {
-//            String response;
-//            command = sc.nextInt();
-//            Client client = new Client(this, lockid, command, response);
-//            client.execute();
-//
-//            // depending on the response, show toast and toggle the lock icon
-//            //Possible responses: Success, Locked, Unlocked, Failure
-//
-//            //this override the implemented method from AsyncResponse
-//              @Override
-//              void processFinish(String output){
-//                   //Here you will receive the result fired from async class
-//                   //of onPostExecute(result) method.
-//                   response = output;
-//              }
-//        } while (command != 0);
-//    }

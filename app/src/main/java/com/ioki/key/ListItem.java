@@ -5,6 +5,7 @@ public class ListItem {
     private String description;
     private String requestType;
     private String id;
+    private String lockStatus;
 
     ListItem(String heading, String description, String requestType, String id) {
         this.heading = heading;
@@ -20,4 +21,10 @@ public class ListItem {
     public String getRequestType() {return requestType;}
 
     public String getId() {return id;}
+
+    public String getLockStatus() {return lockStatus;}
+
+    public void setLockStatus(String lockStatus) {
+        this.lockStatus = lockStatus;
+    }
 }

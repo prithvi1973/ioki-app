@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,18 +39,58 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListItemAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ListItemAdapter.ViewHolder holder, int position) {
         final ListItem listItem = listItems.get(position);
         holder.heading.setText(listItem.getHeading());
         holder.description.setText(listItem.getDescription());
-        if(listItem.getRequestType().equals("locks")) holder.listItemActionButton.setVisibility(View.VISIBLE);
+        if(listItem.getRequestType().equals("credentials")) holder.listItemActionButton.setVisibility(View.GONE);
+
+        else if (listItem.getRequestType().equals("locks")) {
+            final String username = getPreferenceObject().getPreferences(MainActivity.USERNAME);
+            final String lockID = listItem.getId();
+
+            String status = sendSocketRequest(username, lockID, "2");
+            Log.d("ioki-app",status);
+            listItem.setLockStatus(status);
+            holder.setListItemActionButton(status);
+            String command = "";
+            if(status.equals("L")) command = "0";
+            else if(status.equals("U")) command = "1";
+            final String finalCommand = command;
+            holder.listItemActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String response = sendSocketRequest(username,lockID, finalCommand);
+                    if (finalCommand.equals("0") && response.equals("PASS")) {
+                        holder.listItemActionButton.setImageResource(R.mipmap.baseline_lock_open_black_24);
+                        listItem.setLockStatus("0");
+                    } else if (finalCommand.equals("1") && response.equals("PASS")) {
+                        holder.listItemActionButton.setImageResource(R.mipmap.baseline_lock_black_24);
+                        listItem.setLockStatus("1");
+                    } else if (finalCommand.equals("2")) {
+                        if (response.equals("L")) {
+                            holder.listItemActionButton.setImageResource(R.mipmap.baseline_lock_black_24);
+                            listItem.setLockStatus("1");
+                        } else if (response.equals("U")) {
+                            holder.listItemActionButton.setImageResource(R.mipmap.baseline_lock_open_black_24);
+                            listItem.setLockStatus("0");
+                        }
+                    }
+                }
+            });
+            holder.listItemActionButton.setVisibility(View.VISIBLE);
+        }
+
         else holder.listItemActionButton.setVisibility(View.GONE);
+
+
         holder.deleteItemActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new deleteItemTask(view).execute(listItem.getRequestType(), listItem.getId());
             }
         });
+
         holder.updateItemActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,6 +99,18 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
         });
     }
 
+    private String sendSocketRequest(String userID, String lockID, String command) {
+        ArrayList<String> response = new ArrayList<>();
+        String[] arr = new String[3];
+        arr[0] = userID;
+        arr[1] = lockID;
+        arr[2] = command;
+        (new Client(response)).execute(arr);
+        return response.get(0);
+    }
+
+    private void def() {
+    }
 
     @Override
     public int getItemCount() {
@@ -84,6 +137,12 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
             updateItemActionButton = itemView.findViewById(R.id.updateItemActionButton);
             shareItemActionButton = itemView.findViewById(R.id.shareItemActionButton);
             deleteItemActionButton = itemView.findViewById(R.id.deleteItemActionButton);
+        }
+
+        public void setListItemActionButton(String status) {
+            if(status.equals("L")) listItemActionButton.setImageResource(R.mipmap.baseline_lock_black_24);
+            else if(status.equals("U")) listItemActionButton.setImageResource(R.mipmap.baseline_lock_open_black_24);
+            else if(status.equals("FAIL")) listItemActionButton.setImageResource(R.mipmap.baseline_offline_bolt_24);
         }
     }
 
@@ -130,5 +189,4 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
             }
         }
     }
-
 }

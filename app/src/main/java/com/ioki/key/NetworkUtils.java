@@ -31,7 +31,8 @@ public class NetworkUtils {
      *  When required, users/login/ or users/register/ can be appended to it
      *  to generate usage specific URLs
      */
-    final static String IoKi_HOST_IP = "http://192.168.43.224/";
+    final static String IoKi_HOST = "192.168.43.113";
+    final static String IoKi_HOST_IP = "http://"+IoKi_HOST+"/";
     final static String IoKi_BASE_URL = IoKi_HOST_IP + "ioki/api/";
 
     /** Helper function for performPostDataString

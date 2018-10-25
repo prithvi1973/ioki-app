@@ -24,7 +24,7 @@ import static com.ioki.key.MainActivity.RESPONSE;
 import static com.ioki.key.MainActivity.getPreferenceObject;
 
 /**
- * These utilities will be used to communicate with the server.
+ * These utilities will be used to communicate over the network.
  */
 public class NetworkUtils {
 

@@ -1,7 +1,7 @@
 package com.ioki.key;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,77 +38,60 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ListItemAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ListItemAdapter.ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+
         final ListItem listItem = listItems.get(position);
         holder.heading.setText(listItem.getHeading());
         holder.description.setText(listItem.getDescription());
-        if(listItem.getRequestType().equals("credentials")) holder.listItemActionButton.setVisibility(View.GONE);
 
-        else if (listItem.getRequestType().equals("locks")) {
-            final String username = getPreferenceObject().getPreferences(MainActivity.USERNAME);
-            final String lockID = listItem.getId();
+        switch (listItem.getRequestType()) {
+            case "credentials":
+                holder.listItemActionButton.setVisibility(View.GONE);
+                break;
+            case "locks":
+                final String username = getPreferenceObject().getPreferences(MainActivity.USERNAME);
+                final String lockID = listItem.getId();
+                new updateLockStatusTask(holder,listItem).execute(username, lockID);
 
-            String status = sendSocketRequest(username, lockID, "2");
-            Log.d("ioki-app",status);
-            listItem.setLockStatus(status);
-            holder.setListItemActionButton(status);
-            String command = "";
-            if(status.equals("L")) command = "0";
-            else if(status.equals("U")) command = "1";
-            final String finalCommand = command;
-            holder.listItemActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String response = sendSocketRequest(username,lockID, finalCommand);
-                    if (finalCommand.equals("0") && response.equals("PASS")) {
-                        holder.listItemActionButton.setImageResource(R.mipmap.baseline_lock_open_black_24);
-                        listItem.setLockStatus("0");
-                    } else if (finalCommand.equals("1") && response.equals("PASS")) {
-                        holder.listItemActionButton.setImageResource(R.mipmap.baseline_lock_black_24);
-                        listItem.setLockStatus("1");
-                    } else if (finalCommand.equals("2")) {
-                        if (response.equals("L")) {
-                            holder.listItemActionButton.setImageResource(R.mipmap.baseline_lock_black_24);
-                            listItem.setLockStatus("1");
-                        } else if (response.equals("U")) {
-                            holder.listItemActionButton.setImageResource(R.mipmap.baseline_lock_open_black_24);
-                            listItem.setLockStatus("0");
+                holder.listItemActionButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String command = "2";
+                        switch (listItem.getLockStatus()) {
+                            case "L":
+                                command = "0";
+                                break;
+                            case "U":
+                                command = "1";
+                                break;
+                            case "O":
+                                Toast.makeText(v.getContext(), "Lock is Offline", Toast.LENGTH_SHORT).show();
+                                break;
                         }
+                        new toggleLockStatusTask(holder,listItem,v.getContext()).execute(username, lockID, command);
                     }
-                }
-            });
-            holder.listItemActionButton.setVisibility(View.VISIBLE);
+                });
+                holder.listItemActionButton.setVisibility(View.VISIBLE);
+                break;
+            default:
+                holder.listItemActionButton.setVisibility(View.GONE);
+                break;
         }
-
-        else holder.listItemActionButton.setVisibility(View.GONE);
 
 
         holder.deleteItemActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new deleteItemTask(view).execute(listItem.getRequestType(), listItem.getId());
+                new deleteItemTask(view,listItems,position).execute(listItem.getRequestType(), listItem.getId());
             }
         });
 
         holder.updateItemActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent();
+                // TODO: Create intent that takes to update activity
             }
         });
-    }
-
-    private String sendSocketRequest(String userID, String lockID, String command) {
-        ArrayList<String> response = new ArrayList<>();
-        String[] arr = new String[3];
-        arr[0] = userID;
-        arr[1] = lockID;
-        arr[2] = command;
-        (new Client(response)).execute(arr);
-        return response.get(0);
-    }
-
-    private void def() {
     }
 
     @Override
@@ -140,9 +122,20 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
         }
 
         public void setListItemActionButton(String status) {
-            if(status.equals("L")) listItemActionButton.setImageResource(R.mipmap.baseline_lock_black_24);
-            else if(status.equals("U")) listItemActionButton.setImageResource(R.mipmap.baseline_lock_open_black_24);
-            else if(status.equals("FAIL")) listItemActionButton.setImageResource(R.mipmap.baseline_offline_bolt_24);
+            switch (status) {
+                case "L":
+                    listItemActionButton.setImageResource(R.mipmap.baseline_lock_open_black_24);
+                    break;
+                case "U":
+                    listItemActionButton.setImageResource(R.mipmap.baseline_lock_black_24);
+                    break;
+                case "O":
+                    listItemActionButton.setImageResource(R.mipmap.baseline_offline_bolt_24);
+                    break;
+                default:
+                    listItemActionButton.setImageResource(R.mipmap.baseline_error_outline_24);
+                    break;
+            }
         }
     }
 
@@ -150,11 +143,16 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
     private static class deleteItemTask extends AsyncTask<String, Void, String> {
 
         private String response;
+        @SuppressLint("StaticFieldLeak")
         View v;
+        private List<ListItem> listItems;
+        private int pos;
 
-        public deleteItemTask(View v) {
+        deleteItemTask(View v, List<ListItem> listItems, int pos) {
             this.response = "";
             this.v = v;
+            this.listItems = listItems;
+            this.pos = pos;
         }
 
         @Override
@@ -174,18 +172,78 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
 
         protected void onPostExecute(String queryResults) {
             if (response != null && !response.equals("")) {
-                JSONObject json = null;
+                JSONObject json;
                 try {
                     json = new JSONObject(response);
                     getPreferenceObject().saveData(RESPONSE, response);
-
-                    String status = json.getJSONArray("messages").getJSONObject(0).getString("type");
                     String message = json.getJSONArray("messages").getJSONObject(0).getString("message");
+                    this.listItems.remove(this.pos);
                     Toast.makeText(v.getContext(),message,Toast.LENGTH_LONG).show();
-
                 } catch (JSONException e) {
                     Toast.makeText(v.getContext(),"Invalid Server Response",Toast.LENGTH_LONG).show();
                 }
+            }
+        }
+    }
+
+    // Inner class to invoke Socket request for lock status fetch process
+    private static class updateLockStatusTask extends AsyncTask<String, Void, String> {
+
+        private ViewHolder holder;
+        private ListItem listItem;
+        private String response = "FAIL";
+
+        updateLockStatusTask(ViewHolder holder, ListItem listItem) {
+            this.holder = holder;
+            this.listItem = listItem;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            this.response = NetworkUtils.performSocketCall(NetworkUtils.LOCK_SERVER_COM_PORT,params[0],params[1],"2");
+            return this.response;
+        }
+
+        protected void onPostExecute(String queryResults) {
+            listItem.setLockStatus(response);
+            holder.setListItemActionButton(response);
+        }
+    }
+
+    // Inner class to invoke Socket request for lock status change process
+    private static class toggleLockStatusTask extends AsyncTask<String, Void, String> {
+
+        private ViewHolder holder;
+        private ListItem listItem;
+        @SuppressLint("StaticFieldLeak")
+        private Context context;
+        private String response = "FAIL";
+
+        private String command;
+
+        toggleLockStatusTask(ViewHolder holder, ListItem listItem, Context context) {
+            this.holder = holder;
+            this.listItem = listItem;
+            this.command = "";
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            this.command = params[2];
+            this.response = NetworkUtils.performSocketCall(NetworkUtils.LOCK_SERVER_COM_PORT,params[0],params[1],params[2]);
+            return this.response;
+        }
+
+        protected void onPostExecute(String queryResults) {
+            if (command.equals("0") && response.equals("PASS")) {
+                listItem.setLockStatus("U");
+                holder.setListItemActionButton("U");
+                Toast.makeText(context,"Unlocked "+ listItem.getHeading(), Toast.LENGTH_SHORT).show();
+            } else if (command.equals("1") && response.equals("PASS")) {
+                listItem.setLockStatus("L");
+                holder.setListItemActionButton("L");
+                Toast.makeText(context,"Locked "+ listItem.getHeading(), Toast.LENGTH_SHORT).show();
             }
         }
     }

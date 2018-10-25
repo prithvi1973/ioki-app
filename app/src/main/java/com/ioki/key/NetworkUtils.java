@@ -1,7 +1,5 @@
 package com.ioki.key;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,8 +8,11 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -27,16 +28,21 @@ import static com.ioki.key.MainActivity.getPreferenceObject;
  */
 public class NetworkUtils {
 
-    /** Base url will look like https://www.ioki.com
+    /**
+     *  Base url will look like https://www.ioki.com
      *  When required, users/login/ or users/register/ can be appended to it
      *  to generate usage specific URLs
      */
-    final static String IoKi_HOST = "192.168.43.113";
-    final static String IoKi_HOST_IP = "http://"+IoKi_HOST+"/";
+    final static String IoKi_HOST = "192.168.43.224";
+    private final static String IoKi_HOST_IP = "http://"+IoKi_HOST+"/";
     final static String IoKi_BASE_URL = IoKi_HOST_IP + "ioki/api/";
 
-    /** Helper function for performPostDataString
+    public static final int LOCK_SERVER_COM_PORT = 9292;
+
+    /**
+     *  Helper function for performPostDataString
      *  Reads a hash map of parameters
+     *  Binds session information in the params
      *  Prepares and returns string with parameters POST query
      *  Example: <name:jhanak,pass:1234,type:1> becomes "name=jhanak&pass=1234&type=1"
      */
@@ -54,18 +60,25 @@ public class NetworkUtils {
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
 
-//        String oldSessionVars = mSharedPreferences.getString(RESPONSE, null);
-
         String oldSessionVars = getPreferenceObject().getPreferences(RESPONSE);
         String defaultValue = "DEFAULT";
         if(!oldSessionVars.equals(defaultValue)){
             try {
                 JSONObject ob = new JSONObject(oldSessionVars);
-                result.append("&session=" + ob.getJSONObject("session").toString());
+                result.append("&session=").append(ob.getJSONObject("session").toString());
             } catch (JSONException e) {
-                Log.d("ioki-debug", "Invalid Response");
                 e.printStackTrace();
             }
+        }
+        return result.toString();
+    }
+
+    private static String getSocketParamString(String... params) {
+        StringBuilder result = new StringBuilder();
+        for(int i=0; i<params.length; i++){
+            if(i>0)
+                result.append(":");
+            result.append(params[i]);
         }
         return result.toString();
     }
@@ -79,12 +92,6 @@ public class NetworkUtils {
     public static String performPostCall(String requestURL, HashMap<String, String> postDataParams) {
 
         URL url;
-        Log.d("ioki", requestURL);
-        try {
-            Log.d("ioki", getPostDataString(postDataParams));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
         StringBuilder response = new StringBuilder();
         try {
             url = new URL(requestURL);
@@ -118,7 +125,33 @@ public class NetworkUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return response.toString();
+    }
+
+    /**
+     * Establishes a Socket Connection
+     * Sends data to PORT with params
+     * Fetches response stream
+     * Builds and returns response as string
+     */
+    public static String performSocketCall(int PORT, String... params) {
+        Socket socket = null;
+        String response = "FAIL";
+        try {
+            InetAddress serverAddress = InetAddress.getByName(NetworkUtils.IoKi_HOST);
+            socket = new Socket(serverAddress, PORT);
+            PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
+            output.println(getSocketParamString(params));
+            response = (new BufferedReader(new InputStreamReader(socket.getInputStream()))).readLine();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            if (socket != null)
+                socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 }

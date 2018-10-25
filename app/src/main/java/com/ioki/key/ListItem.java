@@ -12,6 +12,7 @@ public class ListItem {
         this.description = description;
         this.requestType = requestType;
         this.id = id;
+        this.lockStatus = "FAIL";
     }
 
     public String getHeading() {return heading;}

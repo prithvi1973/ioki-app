@@ -64,7 +64,7 @@
         android:hint="@string/name"
         android:inputType="textPersonName"
         android:paddingTop="60dp"
-        android:text="vini"
+        android:text="amone4"
         app:layout_constraintBottom_toTopOf="@+id/password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

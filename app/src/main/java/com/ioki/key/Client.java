@@ -66,4 +66,9 @@ public class Client extends AsyncTask<String, Void, Void> {
         this.response.add(response);
         return null;
     }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+    }
 }

@@ -39,7 +39,24 @@ public class Dashboard extends AppCompatActivity{
     private ProgressBar listItemProgressBar;
     private RecyclerView recyclerView;
     private List<ListItem> listItems;
-    private String currView;
+    private String currView = "";
+    private Menu menu = null;
+
+    @Override
+    protected void onResume() {
+        switch (currView) {
+            case "frequent":
+                loadFrequentlyUsed();
+                break;
+            case "locks":
+                loadLocks();
+                break;
+            case "credentials":
+                loadCredentials();
+                break;
+        }
+        super.onResume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +92,20 @@ public class Dashboard extends AppCompatActivity{
         drawerLayout.closeDrawer(LEFT);
     }
 
+    public void loadFrequentlyUsed() {
+        if(menu!=null) loadFrequentlyUsed(menu.findItem(R.id.navBar_quick));
+    }
+
     @SuppressLint("RtlHardcoded")
     public void loadLocks(MenuItem item) {
         currView = "locks";
         fab.setVisibility(VISIBLE);
         new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
         drawerLayout.closeDrawer(LEFT);
+    }
+
+    public void loadLocks() {
+        if(menu!=null) loadLocks(menu.findItem(R.id.navBar_locks));
     }
 
     @SuppressLint("RtlHardcoded")
@@ -91,8 +116,13 @@ public class Dashboard extends AppCompatActivity{
         drawerLayout.closeDrawer(LEFT);
     }
 
+    public void loadCredentials() {
+        if(menu!=null) loadLocks(menu.findItem(R.id.navBar_credentials));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.nav,menu);
         loadFrequentlyUsed(menu.findItem(R.id.navBar_quick));
         return super.onCreateOptionsMenu(menu);
@@ -164,7 +194,6 @@ public class Dashboard extends AppCompatActivity{
         @Override
         protected void onPostExecute(String queryResults) {
             listItems.clear();
-            Log.d("ioki-debug", requestType.toUpperCase() + " JSON Response: " + response);
             if (response!= null && !response.equals("")) {
                 try {
                     JSONObject responseJSON = new JSONObject(response);
@@ -173,7 +202,6 @@ public class Dashboard extends AppCompatActivity{
                         JSONArray listItemArray = responseJSON.getJSONArray("data");
                         for (int i = 0; i < listItemArray.length(); i++) {
                             JSONObject listItemObject = listItemArray.getJSONObject(i);
-                            Log.d("ioki-debug", listItemObject.getString("name") + " | " + listItemObject.getString("id"));
                             listItems.add(new ListItem(listItemObject.getString("name"), listItemObject.getString("id"), requestType, listItemObject.getString("id")));
                         }
                     }

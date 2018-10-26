@@ -1,5 +1,6 @@
 package com.ioki.key;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,12 +10,18 @@ import android.widget.EditText;
 public class UpdateLock extends AppCompatActivity {
 
     EditText name;
+    private String id = "";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_lock);
-
         name = findViewById(R.id.update_lock_name);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            this.id = extras.getString("LOCKID");
+        }
     }
 
     public void updateLock(View view) {

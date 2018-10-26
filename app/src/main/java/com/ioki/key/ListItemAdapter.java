@@ -2,6 +2,7 @@ package com.ioki.key;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -90,6 +91,15 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
             @Override
             public void onClick(View view) {
                 // TODO: Create intent that takes to update activity
+                String id = listItem.getId();
+                switch(listItem.getRequestType()){
+                    case "credentials":
+                        Intent cintent = new Intent(view.getContext(), UpdateCredential.class);
+                        cintent.putExtra("LOGIN", id);
+                    case "locks":
+                        Intent lintent = new Intent(view.getContext(), UpdateLock.class);
+                        lintent.putExtra("LOCKID", id);
+                }
             }
         });
     }

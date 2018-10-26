@@ -1,5 +1,6 @@
 package com.ioki.key;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,13 +25,14 @@ public class UpdateLock extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if(extras != null){
             this.id = extras.getString("LOCKID");
+            Log.d("ioki-debug",this.id);
         }
+
     }
 
     public void updateLock(View view) {
         String newName = name.getText().toString();
         new updateLockInfoTask(this.id).execute(newName);
-        finish();
     }
 
     // Inner class to invoke POST request for sending lock update process
@@ -61,6 +63,7 @@ public class UpdateLock extends AppCompatActivity {
         @Override
         protected void onPostExecute(String queryResults) {
             Log.d("ioki-debug",response);
+            finish();
         }
     }
 

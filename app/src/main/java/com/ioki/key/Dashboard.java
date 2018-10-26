@@ -1,6 +1,8 @@
 package com.ioki.key;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,8 +45,11 @@ public class Dashboard extends AppCompatActivity{
     private String currView = "";
     private Menu menu = null;
 
+
     Timer viewUpdateTimer = new Timer();
     boolean timerStarted = false;
+    private Dashboard con;
+
     public void startViewUpdateTimer() {
         if(!timerStarted) {
             viewUpdateTimer.scheduleAtFixedRate(new TimerTask() {
@@ -96,7 +101,7 @@ public class Dashboard extends AppCompatActivity{
         listItemProgressBar.setVisibility(VISIBLE);
         listItems = new ArrayList<>();
 
-//        viewUpdateTimer.scheduleAtFixedRate(viewUpdateTask, 3000,1000);
+        con = this;
     }
 
     @SuppressLint("RtlHardcoded")
@@ -239,7 +244,7 @@ public class Dashboard extends AppCompatActivity{
             }
             else populateDummyListItems();
             listItemProgressBar.setVisibility(GONE);
-            recyclerView.setAdapter(new ListItemAdapter(listItems));
+            recyclerView.setAdapter(new ListItemAdapter(listItems,con));
             startViewUpdateTimer();
         }
     }

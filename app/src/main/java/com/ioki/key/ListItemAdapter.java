@@ -1,6 +1,7 @@
 package com.ioki.key;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -26,9 +27,11 @@ import static com.ioki.key.MainActivity.getPreferenceObject;
 public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHolder> {
 
     private List<ListItem> listItems;
+    private Context context;
 
-    ListItemAdapter(List<ListItem> listItems) {
+    ListItemAdapter(List<ListItem> listItems, Context context) {
         this.listItems = listItems;
+        this.context = context;
     }
 
     @NonNull
@@ -91,16 +94,20 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
             @Override
             public void onClick(View view) {
                 // TODO: Create intent that takes to update activity
+                String type = listItem.getRequestType();
                 String id = listItem.getId();
-                switch(listItem.getRequestType()){
+                switch(type){
                     case "credentials":
-                        Intent cintent = new Intent(view.getContext(), UpdateCredential.class);
-                        cintent.putExtra("LOGIN", id);
-                        view.getContext().startActivity(cintent);
+                        Intent credUpdateIntent = new Intent(context, UpdateCredential.class);
+                        credUpdateIntent.putExtra("LOGIN", id);
+                        context.startActivity(credUpdateIntent);
+                        break;
+
                     case "locks":
-                        Intent lintent = new Intent(view.getContext(), UpdateLock.class);
-                        lintent.putExtra("LOCKID", id);
-                        view.getContext().startActivity(lintent);
+                        Intent lockUpdateIntent = new Intent(context, UpdateLock.class);
+                        lockUpdateIntent.putExtra("LOCKID", id);
+                        context.startActivity(lockUpdateIntent);
+                        break;
                 }
             }
         });

@@ -1,6 +1,5 @@
 package com.ioki.key;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +33,7 @@ public class UpdateCredential extends AppCompatActivity implements AdapterView.O
         Bundle extras = getIntent().getExtras();
         if(extras != null){
             id = extras.getString("LOGIN");
+            Log.d("ioki-debug",this.id);
         }
 
         spinner.setOnItemSelectedListener(this);
@@ -51,11 +52,15 @@ public class UpdateCredential extends AppCompatActivity implements AdapterView.O
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // On selecting a spinner item
         typeSelected = parent.getItemAtPosition(position).toString();
+        typeSelected = typeSelected.toLowerCase();
     }
 
     public void onNothingSelected(AdapterView<?> arg0) {}
 
-    public void addANewCredential(View view) {
+    public void updateCredential(View view) {
+        String newLogin = login.getText().toString();
+        String newPass = password.getText().toString();
+        String newType = typeSelected;
         if(login.getText().toString().equals("")
                 || password.getText().toString().equals("")){
             Toast.makeText(this, "Fill all the fields", Toast.LENGTH_SHORT).show();
@@ -64,9 +69,7 @@ public class UpdateCredential extends AppCompatActivity implements AdapterView.O
             Toast.makeText(this, "Select a type", Toast.LENGTH_SHORT).show();
         }
         else{
-            // TODO: Update old credential on the server
-
-            finish();
+            new updateCredentialInfoTask(this.id).execute(newLogin,newPass,newType);
         }
     }
 
@@ -76,7 +79,7 @@ public class UpdateCredential extends AppCompatActivity implements AdapterView.O
         private String id;
         private String response;
 
-        public updateCredentialInfoTask(String id) {
+        updateCredentialInfoTask(String id) {
             this.id = id;
         }
 
@@ -100,6 +103,7 @@ public class UpdateCredential extends AppCompatActivity implements AdapterView.O
         @Override
         protected void onPostExecute(String queryResults) {
             Log.d("ioki-debug",response);
+            finish();
         }
     }
 

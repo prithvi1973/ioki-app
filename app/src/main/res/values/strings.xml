@@ -9,7 +9,7 @@
     <string name="email">Email ID</string>
     <string name="pin">Enter security PIN</string>
     <string name="RegistrationDone">Done</string>
-    <string name="enter_username">Enter Username</string>
+    <string name="enter_username">Username</string>
     <string name="next_button1">Next</string>
     <string name="next">Next</string>
     <string name="enter_your_name">Enter your name</string>
@@ -29,4 +29,5 @@
     <string name="enter_link">Enter Link</string>
     <string name="login">Login</string>
     <string name="type">Type</string>
+    <string name="expiry_date">Expiry Date</string>
 </resources>

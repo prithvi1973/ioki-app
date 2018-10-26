@@ -96,9 +96,11 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
                     case "credentials":
                         Intent cintent = new Intent(view.getContext(), UpdateCredential.class);
                         cintent.putExtra("LOGIN", id);
+                        view.getContext().startActivity(cintent);
                     case "locks":
                         Intent lintent = new Intent(view.getContext(), UpdateLock.class);
                         lintent.putExtra("LOCKID", id);
+                        view.getContext().startActivity(lintent);
                 }
             }
         });

@@ -29,6 +29,8 @@
         <activity android:name="com.ioki.key.RegisterEmail" />
         <activity android:name="com.ioki.key.RegisterMobile"/>
         <activity android:name="com.ioki.key.OtpActivity"/>
+        <activity android:name="com.ioki.key.AddCredential"/>
+        <activity android:name="com.ioki.key.AddLock"/>
 
         <receiver
             android:name=".MySMSBroadCastReceiver"

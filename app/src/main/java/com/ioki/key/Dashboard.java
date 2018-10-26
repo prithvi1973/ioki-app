@@ -60,7 +60,7 @@ public class Dashboard extends AppCompatActivity{
                             break;
                     }
                 }
-            },0,60000);
+            },0,6000);
             timerStarted = true;
         }
     }

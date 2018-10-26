@@ -19,12 +19,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.view.Gravity.LEFT;
 import static android.view.View.GONE;
@@ -42,19 +43,31 @@ public class Dashboard extends AppCompatActivity{
     private String currView = "";
     private Menu menu = null;
 
+    Timer viewUpdateTimer = new Timer();
+    boolean timerStarted = false;
+    public void startViewUpdateTimer() {
+        if(!timerStarted) {
+            viewUpdateTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Log.d("ioki-debug", "Refreshing "+currView);
+                    switch (currView) {
+                        case "locks":
+                            new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
+                            break;
+                        case "credentials":
+                            new populateRecyclerViewTask("credentials", listItems, recyclerView, listItemProgressBar).execute("1");
+                            break;
+                    }
+                }
+            },0,60000);
+            timerStarted = true;
+        }
+    }
+
     @Override
     protected void onResume() {
-        switch (currView) {
-            case "frequent":
-                loadFrequentlyUsed();
-                break;
-            case "locks":
-                loadLocks();
-                break;
-            case "credentials":
-                loadCredentials();
-                break;
-        }
+        this.refreshView();
         super.onResume();
     }
 
@@ -82,6 +95,8 @@ public class Dashboard extends AppCompatActivity{
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         listItemProgressBar.setVisibility(VISIBLE);
         listItems = new ArrayList<>();
+
+//        viewUpdateTimer.scheduleAtFixedRate(viewUpdateTask, 3000,1000);
     }
 
     @SuppressLint("RtlHardcoded")
@@ -92,20 +107,12 @@ public class Dashboard extends AppCompatActivity{
         drawerLayout.closeDrawer(LEFT);
     }
 
-    public void loadFrequentlyUsed() {
-        if(menu!=null) loadFrequentlyUsed(menu.findItem(R.id.navBar_quick));
-    }
-
     @SuppressLint("RtlHardcoded")
     public void loadLocks(MenuItem item) {
         currView = "locks";
         fab.setVisibility(VISIBLE);
         new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
         drawerLayout.closeDrawer(LEFT);
-    }
-
-    public void loadLocks() {
-        if(menu!=null) loadLocks(menu.findItem(R.id.navBar_locks));
     }
 
     @SuppressLint("RtlHardcoded")
@@ -116,15 +123,29 @@ public class Dashboard extends AppCompatActivity{
         drawerLayout.closeDrawer(LEFT);
     }
 
-    public void loadCredentials() {
-        if(menu!=null) loadLocks(menu.findItem(R.id.navBar_credentials));
+    public void refreshView() {
+        if(menu!=null)
+            switch (currView) {
+                case "frequent":
+                    loadFrequentlyUsed(menu.findItem(R.id.navBar_quick));
+                    break;
+                case "locks":
+                    loadLocks(menu.findItem(R.id.navBar_locks));
+                    break;
+                case "credentials":
+                    loadCredentials(menu.findItem(R.id.navBar_credentials));
+                    break;
+                default:
+                    loadLocks(menu.findItem(R.id.navBar_locks));
+                    break;
+            }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.nav,menu);
-        loadFrequentlyUsed(menu.findItem(R.id.navBar_quick));
+        refreshView();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -156,7 +177,7 @@ public class Dashboard extends AppCompatActivity{
 
     @SuppressLint("StaticFieldLeak")
     // Inner class to invoke POST request for fetching list items
-    public static class populateRecyclerViewTask extends AsyncTask<String, Void, String> {
+    private class populateRecyclerViewTask extends AsyncTask<String, Void, String> {
 
         // Stores response from server
         private String requestType;
@@ -187,7 +208,7 @@ public class Dashboard extends AppCompatActivity{
         }
 
         private void populateDummyListItems() {
-            for(int i=0; i<3; i++)
+            for(int i=0; i<1; i++)
                 listItems.add(new ListItem(requestType.toUpperCase() + " Dummy " + (i+1),"Lock/Credential ID" + (i+1), requestType, String.valueOf(i+1)));
         }
 
@@ -214,11 +235,12 @@ public class Dashboard extends AppCompatActivity{
                             listItems.add(new ListItem(dec.getString("login"), enc.getString("link"), requestType, enc.getString("id")));
                         }
                     }
-                } catch (JSONException e) {populateDummyListItems();}
+                } catch (Exception e) {populateDummyListItems();}
             }
             else populateDummyListItems();
             listItemProgressBar.setVisibility(GONE);
             recyclerView.setAdapter(new ListItemAdapter(listItems));
+            startViewUpdateTimer();
         }
     }
 

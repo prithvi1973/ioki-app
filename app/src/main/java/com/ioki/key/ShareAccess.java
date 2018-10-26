@@ -22,10 +22,11 @@ public class ShareAccess extends AppCompatActivity {
     EditText username;
     TextView time;
     TextView date;
-    DatePicker mDatePicker;
+
     TimePicker mTimePicker;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private int month, year, day, hour, minute, second;
+    private String type, id;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -35,7 +36,12 @@ public class ShareAccess extends AppCompatActivity {
         username = findViewById(R.id.username);
         time = findViewById(R.id.timeTextView);
         date = findViewById(R.id.dateTextView);
-        mDatePicker = findViewById(R.id.datePicker);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            type = extras.getString("TYPE");
+            id = extras.getString("ID");
+        }
 
         DateTimeFormatter dtf_date = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate currentDate = LocalDate.now();
@@ -69,13 +75,6 @@ public class ShareAccess extends AppCompatActivity {
                 date.setText(dayOfMonth+"/"+month+"/"+year);
             }
         };
-    }
-
-    public void setExpiryDate(View view) {
-        month = mDatePicker.getMonth()+1;
-        year = mDatePicker.getYear();
-        day = mDatePicker.getDayOfMonth();
-        date.setText(day+"/"+month+"/"+year);
     }
 
     // TODO: Add time picker dialog, check the working of date picker

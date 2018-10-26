@@ -51,13 +51,6 @@
 
             <!--android:onClick="setExpiryDate"-->
 
-            <DatePicker
-                android:id="@+id/datePicker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="36dp" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -75,7 +68,7 @@
                 android:text="Expiry Time"
                 android:textSize="18dp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/timeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -83,6 +76,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:onClick="setExpiryTime"
+                android:text="23:59"
                 android:paddingBottom="8dp"
                 android:paddingEnd="4dp"
                 android:paddingStart="8dp"

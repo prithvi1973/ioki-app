@@ -90,6 +90,25 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
             }
         });
 
+        holder.shareItemActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id = listItem.getId();
+                switch(listItem.getRequestType()){
+                    case "credentials":
+                        Intent cintent = new Intent(context, UpdateCredential.class);
+                        cintent.putExtra("LOGIN", id);
+                        context.startActivity(cintent);
+                        break;
+                    case "locks":
+                        Intent lintent = new Intent(context, UpdateLock.class);
+                        lintent.putExtra("LOCKID", id);
+                        context.startActivity(lintent);
+                        break;
+                }
+            }
+        });
+
         holder.updateItemActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

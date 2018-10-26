@@ -57,10 +57,14 @@ public class UpdateCredential extends AppCompatActivity implements AdapterView.O
 
     public void onNothingSelected(AdapterView<?> arg0) {}
 
+<<<<<<< Updated upstream
     public void updateCredential(View view) {
         String newLogin = login.getText().toString();
         String newPass = password.getText().toString();
         String newType = typeSelected;
+=======
+    public void UpdateCredential(View view) {
+>>>>>>> Stashed changes
         if(login.getText().toString().equals("")
                 || password.getText().toString().equals("")){
             Toast.makeText(this, "Fill all the fields", Toast.LENGTH_SHORT).show();

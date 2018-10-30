@@ -1,8 +1,6 @@
 package com.ioki.key;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -65,7 +63,7 @@ public class Dashboard extends AppCompatActivity{
                             break;
                     }
                 }
-            },0,6000);
+            },0,Config.DASHBOARD_REFRESH_TIME);
             timerStarted = true;
         }
     }

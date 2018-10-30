@@ -2,36 +2,60 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="16dp"
-    android:paddingBottom="16dp"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp">
+    android:padding="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/lock_id"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:background="#ddd">
+
+            <RelativeLayout
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@mipmap/add_lock" />
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/lock_id_editTextView" />
-        <EditText
-            android:id="@+id/lock_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/lock_name_editTextView" />
-        <Button
-            android:id="@+id/addLockSubmitButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/submit"
-            android:layout_gravity="end"
-            android:onClick="addANewLock"/>
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:paddingTop="25dp">
+
+            <EditText
+                android:id="@+id/lock_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/lock_id_editTextView" />
+            <EditText
+                android:id="@+id/lock_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/lock_name_editTextView" />
+            <Button
+                android:id="@+id/addLockSubmitButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="ADD LOCK"
+                android:layout_gravity="center_vertical"
+                android:onClick="addANewLock"/>
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

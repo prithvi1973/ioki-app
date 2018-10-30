@@ -32,6 +32,7 @@
         <activity android:name="com.ioki.key.AddCredential"/>
         <activity android:name="com.ioki.key.UpdateLock"/>
         <activity android:name="com.ioki.key.UpdateCredential"/>
+        <activity android:name="com.ioki.key.ShareAccess"/>
         <activity android:name="com.ioki.key.AddLock"/>
 
         <receiver

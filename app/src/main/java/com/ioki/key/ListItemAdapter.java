@@ -1,7 +1,6 @@
 package com.ioki.key;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -86,7 +85,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
         holder.deleteItemActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new deleteItemTask(view,listItems,position).execute(listItem.getRequestType(), listItem.getId());
+                new deleteItemTask(view,listItems,position,context).execute(listItem.getRequestType(), listItem.getId());
             }
         });
 
@@ -112,7 +111,6 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
         holder.updateItemActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Create intent that takes to update activity
                 String type = listItem.getRequestType();
                 String id = listItem.getId();
                 switch(type){
@@ -128,6 +126,16 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
                         context.startActivity(lockUpdateIntent);
                         break;
                 }
+            }
+        });
+
+        holder.shareItemActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent shareAccessIntent = new Intent(context, ShareAccess.class);
+                shareAccessIntent.putExtra("ID", listItem.getId());
+                shareAccessIntent.putExtra("TYPE", listItem.getRequestType());
+                context.startActivity(shareAccessIntent);
             }
         });
     }
@@ -182,15 +190,17 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
 
         private String response;
         @SuppressLint("StaticFieldLeak")
-        View v;
+        private Context context;
         private List<ListItem> listItems;
         private int pos;
+        View v;
 
-        deleteItemTask(View v, List<ListItem> listItems, int pos) {
+        deleteItemTask(View v, List<ListItem> listItems, int pos, Context context) {
             this.response = "";
             this.v = v;
             this.listItems = listItems;
             this.pos = pos;
+            this.context = context;
         }
 
         @Override
@@ -217,6 +227,13 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
                     String message = json.getJSONArray("messages").getJSONObject(0).getString("message");
                     this.listItems.remove(this.pos);
                     Toast.makeText(v.getContext(),message,Toast.LENGTH_LONG).show();
+
+                    // TODO: Correct this brute force approach to refresh activity
+                    // In ShareAccess finish() is called as no intent params are passed
+                    // thus refreshing Dashboard activity
+                    Intent refreshDashIntent = new Intent(context, ShareAccess.class);
+                    context.startActivity(refreshDashIntent);
+
                 } catch (JSONException e) {
                     Toast.makeText(v.getContext(),"Invalid Server Response",Toast.LENGTH_LONG).show();
                 }

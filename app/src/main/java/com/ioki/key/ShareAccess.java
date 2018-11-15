@@ -1,6 +1,7 @@
 package com.ioki.key;
 
 import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -25,16 +26,20 @@ import java.util.HashMap;
 import static com.ioki.key.MainActivity.RESPONSE;
 import static com.ioki.key.MainActivity.getPreferenceObject;
 
-public class ShareAccess extends AppCompatActivity {
+public class ShareAccess extends AppCompatActivity{
 
     EditText username;
-    TextView time;
-    TextView date;
+    EditText date;
+    EditText hourText;
+    EditText minuteText;
 
     TimePicker mTimePicker;
-    private DatePickerDialog.OnDateSetListener mDateSetListener;
-    private int month, year, day, hour, minute, second;
-    private String tempTime = "23:59";
+    private OnDateSetListener mDateSetListener;
+    private int month;
+    private int year;
+    private int day;
+    private String hour;
+    private String minute;
     private String type, id;
 
     private Context context;
@@ -46,7 +51,8 @@ public class ShareAccess extends AppCompatActivity {
         setContentView(R.layout.share_access);
 
         username = findViewById(R.id.username);
-        time = findViewById(R.id.timeTextView);
+        hourText = findViewById(R.id.hour);
+        minuteText = findViewById(R.id.minute);
         date = findViewById(R.id.dateTextView);
 
         Bundle extras = getIntent().getExtras();
@@ -63,41 +69,37 @@ public class ShareAccess extends AppCompatActivity {
         day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         date.setText(""+year+"-"+month+"-"+day);
 
-        date.setOnClickListener(new View.OnClickListener(){
+        /*date.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getApplicationContext(),
-                        R.style.Theme_AppCompat_Dialog,
                         mDateSetListener,
                         year, month, day);
                 datePickerDialog.show();
             }
         });
 
-        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+        mDateSetListener = new OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year1, int month1, int dayOfMonth) {
                 month = month1+1;
                 day = dayOfMonth;
                 year = year1;
-                date.setText(dayOfMonth+"/"+month+"/"+year);
+                date.setText(day+"/"+month+"/"+year);
             }
-        };
+        };*/
 
         this.context = this;
     }
 
     // TODO: Add time picker dialog, check the working of date picker
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void setExpiryTime(View view) {
-        hour = mTimePicker.getHour();
-        minute = mTimePicker.getMinute();
+    public void shareButton(View view) {
+        hour = hourText.getText().toString();
+        minute = minuteText.getText().toString();
+        new shareTask(id,type,context).execute(username.getText().toString(), date.getText().toString(), hour+":"+minute);
     }
 
-    public void shareButton(View view) {
-        new shareTask(id,type,context).execute(username.getText().toString(), year + "-" + month + "-" + day, "23:59");
-    }
 
     // Inner class to invoke POST request for sending credential update process
     private class shareTask extends AsyncTask<String, Void, String> {

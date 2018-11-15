@@ -20,6 +20,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <Button
+                    android:id="@+id/myLock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="populateMyLocks"
+                    android:text="My Locks"
+                    android:layout_margin="2dp"/>
+
+                <Button
+                    android:id="@+id/sharedToMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="populateLocksSharedToMe"
+                    android:text="Shared to me"
+                    android:layout_margin="2dp"/>
+
+                <Button
+                    android:id="@+id/sharedByMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="populateLocksSharedByMe"
+                    android:text="Shared by me"
+                    android:layout_margin="2dp"/>
+            </android.support.v7.widget.LinearLayoutCompat>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"

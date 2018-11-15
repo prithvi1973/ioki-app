@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,16 +47,32 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
         final ListItem listItem = listItems.get(position);
         holder.heading.setText(listItem.getHeading());
         holder.description.setText(listItem.getDescription());
+        final String username = getPreferenceObject().getPreferences(MainActivity.USERNAME);
+        final String lockID = listItem.getLockID();
+
+        holder.updateItemActionButton.setVisibility(View.GONE);
+        holder.deleteItemActionButton.setVisibility(View.GONE);
+        holder.shareItemActionButton.setVisibility(View.GONE);
+        holder.listItemActionButton.setVisibility(View.GONE);
+        holder.acceptShareItemButton.setVisibility(View.GONE);
+        holder.rejectShareItemButton.setVisibility(View.GONE);
 
         switch (listItem.getRequestType()) {
             case "credentials":
-                holder.listItemActionButton.setVisibility(View.GONE);
+            case "credentials/share/by":
+                holder.updateItemActionButton.setVisibility(View.VISIBLE);
+                holder.deleteItemActionButton.setVisibility(View.VISIBLE);
+                holder.shareItemActionButton.setVisibility(View.VISIBLE);
                 break;
-            case "locks":
-                final String username = getPreferenceObject().getPreferences(MainActivity.USERNAME);
-                final String lockID = listItem.getId();
-                new updateLockStatusTask(holder,listItem).execute(username, lockID);
 
+            case "locks":
+            case "locks/share/by":
+                holder.updateItemActionButton.setVisibility(View.VISIBLE);
+                holder.deleteItemActionButton.setVisibility(View.VISIBLE);
+                holder.shareItemActionButton.setVisibility(View.VISIBLE);
+                holder.listItemActionButton.setVisibility(View.VISIBLE);
+
+                new updateLockStatusTask(holder,listItem).execute(username, lockID);
                 holder.listItemActionButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -74,10 +91,55 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
                         new toggleLockStatusTask(holder,listItem,v.getContext()).execute(username, lockID, command);
                     }
                 });
-                holder.listItemActionButton.setVisibility(View.VISIBLE);
                 break;
+
+            case "locks/share/to":
+                if(listItem.isApproved()) {
+                    holder.listItemActionButton.setVisibility(View.VISIBLE);
+                    new updateLockStatusTask(holder,listItem).execute(username, lockID);
+                    holder.listItemActionButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String command = "2";
+                            switch (listItem.getLockStatus()) {
+                                case "L":
+                                    command = "0";
+                                    break;
+                                case "U":
+                                    command = "1";
+                                    break;
+                                case "O":
+                                    Toast.makeText(v.getContext(), "Lock is Offline", Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
+                            new toggleLockStatusTask(holder,listItem,v.getContext()).execute(username, lockID, command);
+                        }
+                    });
+                }
+                else {
+                    holder.acceptShareItemButton.setVisibility(View.VISIBLE);
+                    holder.rejectShareItemButton.setVisibility(View.VISIBLE);
+
+                    holder.acceptShareItemButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            new sharedLockAcceptRejectTask(holder,listItem).execute(listItem.getRequestType(),"approve",listItem.getId());
+                        }
+                    });
+
+                    holder.rejectShareItemButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            new sharedLockAcceptRejectTask(holder,listItem).execute(listItem.getRequestType(),"reject",listItem.getId());
+                        }
+                    });
+                }
+                break;
+
+            case "credentials/share/to":
+                break;
+
             default:
-                holder.listItemActionButton.setVisibility(View.GONE);
                 break;
         }
 
@@ -138,6 +200,8 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
                 context.startActivity(shareAccessIntent);
             }
         });
+
+
     }
 
     @Override
@@ -147,13 +211,9 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView heading;
-        TextView description;
-
-        ImageButton listItemActionButton;
-        ImageButton updateItemActionButton;
-        ImageButton shareItemActionButton;
-        ImageButton deleteItemActionButton;
+        TextView heading, description;
+        ImageButton listItemActionButton, updateItemActionButton, shareItemActionButton, deleteItemActionButton;
+        Button acceptShareItemButton, rejectShareItemButton;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -165,6 +225,8 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
             updateItemActionButton = itemView.findViewById(R.id.updateItemActionButton);
             shareItemActionButton = itemView.findViewById(R.id.shareItemActionButton);
             deleteItemActionButton = itemView.findViewById(R.id.deleteItemActionButton);
+            acceptShareItemButton = itemView.findViewById(R.id.acceptShareItemButton);
+            rejectShareItemButton = itemView.findViewById(R.id.rejectShareItemButton);
         }
 
         public void setListItemActionButton(String status) {
@@ -211,7 +273,6 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
 
             // Generating URL for POST request
             String requestURL = NetworkUtils.IoKi_BASE_URL + params[0] + "/delete/" + params[1];
-            Log.d("ioki-debug", requestURL);
 
             // Fetching response using utility function
             response = NetworkUtils.performPostCall(requestURL,dataParams);
@@ -257,6 +318,38 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
         protected String doInBackground(String... params) {
             this.response = NetworkUtils.performSocketCall(NetworkUtils.LOCK_SERVER_COM_PORT,params[0],params[1],"2");
             return this.response;
+        }
+
+        protected void onPostExecute(String queryResults) {
+            listItem.setLockStatus(response);
+            holder.setListItemActionButton(response);
+        }
+    }
+
+    // Inner class to invoke Socket request for lock status fetch process
+    private static class sharedLockAcceptRejectTask extends AsyncTask<String, Void, String> {
+
+        private ViewHolder holder;
+        private ListItem listItem;
+        private String response = "FAIL";
+
+        sharedLockAcceptRejectTask(ViewHolder holder, ListItem listItem) {
+            this.holder = holder;
+            this.listItem = listItem;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            // Making map of POST parameters
+            HashMap<String, String> dataParams = new HashMap<>();
+            dataParams.put("submit","1");
+
+            // Generating URL for POST request
+            String requestURL = NetworkUtils.IoKi_BASE_URL + params[0].substring(0,params[0].length()-2) + params[1] + "/" + params[2];
+
+            // Fetching response using utility function
+            response = NetworkUtils.performPostCall(requestURL,dataParams);
+            return response;
         }
 
         protected void onPostExecute(String queryResults) {

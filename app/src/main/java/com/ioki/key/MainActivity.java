@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void LoginIntoAccount(View view) {
-
          String name = mName.getText().toString();
          String password = mPassword.getText().toString();
          new IOkiLoginTask(view.getContext(),this).execute(name, password);

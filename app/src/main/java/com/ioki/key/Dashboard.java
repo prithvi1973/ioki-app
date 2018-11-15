@@ -42,6 +42,7 @@ public class Dashboard extends AppCompatActivity{
     private List<ListItem> listItems;
     private String currView = "";
     private Menu menu = null;
+    private int currentType;
 
 
     Timer viewUpdateTimer = new Timer();
@@ -56,10 +57,36 @@ public class Dashboard extends AppCompatActivity{
                     Log.d("ioki-debug", "Refreshing "+currView);
                     switch (currView) {
                         case "locks":
-                            new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
+                            switch (currentType) {
+                                case 1:
+                                    new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
+                                    break;
+                                case 2:
+                                    new populateRecyclerViewTask("locks/share/by", listItems, recyclerView, listItemProgressBar).execute("1");
+                                    break;
+                                case 3:
+                                    new populateRecyclerViewTask("locks/share/to", listItems, recyclerView, listItemProgressBar).execute("1");
+                                    break;
+                                default:
+                                    new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
+                                    break;
+                            }
                             break;
                         case "credentials":
-                            new populateRecyclerViewTask("credentials", listItems, recyclerView, listItemProgressBar).execute("1");
+                            switch (currentType) {
+                                case 1:
+                                    new populateRecyclerViewTask("credentials", listItems, recyclerView, listItemProgressBar).execute("1");
+                                    break;
+                                case 2:
+                                    new populateRecyclerViewTask("credentials/share/by", listItems, recyclerView, listItemProgressBar).execute("1");
+                                    break;
+                                case 3:
+                                    new populateRecyclerViewTask("credentials/share/to", listItems, recyclerView, listItemProgressBar).execute("1");
+                                    break;
+                                default:
+                                    new populateRecyclerViewTask("credentials", listItems, recyclerView, listItemProgressBar).execute("1");
+                                    break;
+                            }
                             break;
                     }
                 }
@@ -70,6 +97,7 @@ public class Dashboard extends AppCompatActivity{
 
     @Override
     protected void onResume() {
+        this.currentType = 1;
         this.refreshView();
         super.onResume();
     }
@@ -78,6 +106,8 @@ public class Dashboard extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
+
+        this.currentType = 1;
 
         // Initializing Navigation Control
         Toolbar navToolbar = findViewById(R.id.nav_action);
@@ -114,7 +144,20 @@ public class Dashboard extends AppCompatActivity{
     public void loadLocks(MenuItem item) {
         currView = "locks";
         fab.setVisibility(VISIBLE);
-        new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
+        switch (this.currentType) {
+            case 1:
+                new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
+                break;
+            case 2:
+                new populateRecyclerViewTask("locks/share/by", listItems, recyclerView, listItemProgressBar).execute("1");
+                break;
+            case 3:
+                new populateRecyclerViewTask("locks/share/to", listItems, recyclerView, listItemProgressBar).execute("1");
+                break;
+            default:
+                new populateRecyclerViewTask("locks", listItems, recyclerView, listItemProgressBar).execute("1");
+                break;
+        }
         drawerLayout.closeDrawer(LEFT);
     }
 
@@ -122,7 +165,20 @@ public class Dashboard extends AppCompatActivity{
     public void loadCredentials(MenuItem item) {
         currView = "credentials";
         fab.setVisibility(VISIBLE);
-        new populateRecyclerViewTask("credentials", listItems, recyclerView, listItemProgressBar).execute("1");
+        switch (this.currentType) {
+            case 1:
+                new populateRecyclerViewTask("credentials", listItems, recyclerView, listItemProgressBar).execute("1");
+                break;
+            case 2:
+                new populateRecyclerViewTask("credentials/share/by", listItems, recyclerView, listItemProgressBar).execute("1");
+                break;
+            case 3:
+                new populateRecyclerViewTask("credentials/share/to", listItems, recyclerView, listItemProgressBar).execute("1");
+                break;
+            default:
+                new populateRecyclerViewTask("credentials", listItems, recyclerView, listItemProgressBar).execute("1");
+                break;
+        }
         drawerLayout.closeDrawer(LEFT);
     }
 
@@ -142,6 +198,7 @@ public class Dashboard extends AppCompatActivity{
                     loadLocks(menu.findItem(R.id.navBar_locks));
                     break;
             }
+        Log.d("ioki-debug", "loading "+currView+"/"+currentType);
     }
 
     @Override
@@ -159,6 +216,8 @@ public class Dashboard extends AppCompatActivity{
 
     public void logout(MenuItem item){
         Intent intent = new Intent(this, MainActivity.class);
+        viewUpdateTimer.cancel();
+        viewUpdateTimer.purge();
         getPreferenceObject().removeAllSharedPreferences();
         startActivity(intent);
         finish();
@@ -167,15 +226,28 @@ public class Dashboard extends AppCompatActivity{
     public void addNew(View view) {
         Intent i;
         if(currView.equals("locks")) {
-            Log.d("ioki-debug", "Inside Locks");
             i = new Intent(view.getContext(),AddLock.class);
             startActivity(i);
         }
         else if(currView.equals("credentials")) {
-            Log.d("ioki-debug", "Inside Credentials");
             i = new Intent(view.getContext(),AddCredential.class);
             startActivity(i);
         }
+    }
+
+    public void populateMyLocks(View view) {
+        this.currentType = 1;
+        refreshView();
+    }
+
+    public void populateLocksSharedByMe(View view) {
+        this.currentType = 2;
+        refreshView();
+    }
+
+    public void populateLocksSharedToMe(View view) {
+        this.currentType = 3;
+        refreshView();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -207,12 +279,13 @@ public class Dashboard extends AppCompatActivity{
 
             // Fetching response using utility function
             response = NetworkUtils.performPostCall(requestURL,dataParams);
+
             return response;
         }
 
         private void populateDummyListItems() {
             for(int i=0; i<1; i++)
-                listItems.add(new ListItem(requestType.toUpperCase() + " Dummy " + (i+1),"Lock/Credential ID" + (i+1), requestType, String.valueOf(i+1)));
+                listItems.add(new ListItem("Error","Couldn't talk to IOki servers :(",requestType,"","",true));
         }
 
         @Override
@@ -222,20 +295,42 @@ public class Dashboard extends AppCompatActivity{
                 try {
                     JSONObject responseJSON = new JSONObject(response);
 
-                    if(requestType.equals("locks")) {
+                    if(requestType.equals("locks") || requestType.equals("locks/share/to") || requestType.equals("locks/share/by")) {
                         JSONArray listItemArray = responseJSON.getJSONArray("data");
                         for (int i = 0; i < listItemArray.length(); i++) {
+
                             JSONObject listItemObject = listItemArray.getJSONObject(i);
-                            listItems.add(new ListItem(listItemObject.getString("name"), listItemObject.getString("id"), requestType, listItemObject.getString("id")));
+
+                            String name = listItemObject.getString("name");
+                            String id = listItemObject.getString("id");
+                            String lockID =  listItemObject.getString("id");
+                            boolean appr = true;
+
+                            if(requestType.equals("locks/share/to") || requestType.equals("locks/share/by")) {
+                                if (listItemObject.getString("approved").equals("0")) appr = false;
+                                lockID = listItemObject.getString("lock_id");
+                            }
+
+                            listItems.add(new ListItem(name, "", requestType, id, lockID, appr));
                         }
                     }
-                    else if(requestType.equals("credentials")) {
+                    else if(requestType.equals("credentials") || requestType.equals("credentials/share/to") || requestType.equals("credentials/share/by")) {
                         JSONArray encrypted = responseJSON.getJSONObject("data").getJSONArray("encrypted");
                         JSONArray decrypted = responseJSON.getJSONObject("data").getJSONArray("decrypted");
                         for(int i=0; i < encrypted.length(); i++) {
+
                             JSONObject enc = encrypted.getJSONObject(i);
                             JSONObject dec = decrypted.getJSONObject(i);
-                            listItems.add(new ListItem(dec.getString("login"), enc.getString("link"), requestType, enc.getString("id")));
+
+                            String name = dec.getString("login");
+                            String link = enc.getString("link");
+                            String id = enc.getString("id");
+                            boolean appr = true;
+
+                            if(requestType.equals("credentials/share/to") || requestType.equals("credentials/share/by"))
+                                if (enc.getString("approved").equals("0")) appr = false;
+
+                            listItems.add(new ListItem(name, link, requestType, id, "null", appr));
                         }
                     }
                 } catch (Exception e) {populateDummyListItems();}
